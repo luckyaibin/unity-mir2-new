@@ -162,29 +162,29 @@ namespace MLibraryUtils
             Player.Add(MirAction.Mine, new Frame(184, 6, 0, 100, 216, 6, 0, 100));
             Player.Add(MirAction.Lunge, new Frame(139, 1, 5, 1000, 300, 1, 5, 1000));
 
-            //Assassin
-            Player.Add(MirAction.Sneek, new Frame(464, 6, 0, 100, 496, 6, 0, 100));
-            Player.Add(MirAction.DashAttack, new Frame(80, 3, 3, 100, 112, 3, 3, 100));
+            // //Assassin
+            // Player.Add(MirAction.Sneek, new Frame(464, 6, 0, 100, 496, 6, 0, 100));
+            // Player.Add(MirAction.DashAttack, new Frame(80, 3, 3, 100, 112, 3, 3, 100));
 
-            //Archer
-            Player.Add(MirAction.WalkingBow, new Frame(0, 6, 0, 100, 0, 6, 0, 100));
-            Player.Add(MirAction.RunningBow, new Frame(48, 6, 0, 100, 48, 6, 0, 100));
-            Player.Add(MirAction.AttackRange1, new Frame(96, 8, 0, 100, 96, 8, 0, 100));
-            Player.Add(MirAction.AttackRange2, new Frame(160, 8, 0, 100, 160, 8, 0, 100));
-            Player.Add(MirAction.AttackRange3, new Frame(224, 8, 0, 100, 224, 8, 0, 100));
-            Player.Add(MirAction.Jump, new Frame(288, 8, 0, 100, 288, 8, 0, 100));
+            // //Archer
+            // Player.Add(MirAction.WalkingBow, new Frame(0, 6, 0, 100, 0, 6, 0, 100));
+            // Player.Add(MirAction.RunningBow, new Frame(48, 6, 0, 100, 48, 6, 0, 100));
+            // Player.Add(MirAction.AttackRange1, new Frame(96, 8, 0, 100, 96, 8, 0, 100));
+            // Player.Add(MirAction.AttackRange2, new Frame(160, 8, 0, 100, 160, 8, 0, 100));
+            // Player.Add(MirAction.AttackRange3, new Frame(224, 8, 0, 100, 224, 8, 0, 100));
+            // Player.Add(MirAction.Jump, new Frame(288, 8, 0, 100, 288, 8, 0, 100));
 
-            //Mounts
-            Player.Add(MirAction.MountStanding, new Frame(416, 4, 0, 500, 448, 4, 0, 500));
-            Player.Add(MirAction.MountWalking, new Frame(448, 8, 0, 100, 480, 8, 0, 500));
-            Player.Add(MirAction.MountRunning, new Frame(512, 6, 0, 100, 544, 6, 0, 100));
-            Player.Add(MirAction.MountStruck, new Frame(560, 3, 0, 100, 592, 3, 0, 100));
-            Player.Add(MirAction.MountAttack, new Frame(584, 6, 0, 100, 616, 6, 0, 100));
+            // //Mounts
+            // Player.Add(MirAction.MountStanding, new Frame(416, 4, 0, 500, 448, 4, 0, 500));
+            // Player.Add(MirAction.MountWalking, new Frame(448, 8, 0, 100, 480, 8, 0, 500));
+            // Player.Add(MirAction.MountRunning, new Frame(512, 6, 0, 100, 544, 6, 0, 100));
+            // Player.Add(MirAction.MountStruck, new Frame(560, 3, 0, 100, 592, 3, 0, 100));
+            // Player.Add(MirAction.MountAttack, new Frame(584, 6, 0, 100, 616, 6, 0, 100));
 
-            //Fishing
-            Player.Add(MirAction.FishingCast, new Frame(632, 8, 0, 100));
-            Player.Add(MirAction.FishingWait, new Frame(696, 6, 0, 120));
-            Player.Add(MirAction.FishingReel, new Frame(744, 8, 0, 100));
+            // //Fishing
+            // Player.Add(MirAction.FishingCast, new Frame(632, 8, 0, 100));
+            // Player.Add(MirAction.FishingWait, new Frame(696, 6, 0, 120));
+            // Player.Add(MirAction.FishingReel, new Frame(744, 8, 0, 100));
 
             #endregion
         }
