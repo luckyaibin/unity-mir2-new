@@ -72,27 +72,27 @@ namespace MLibraryUtils
         //Map
         public readonly MLibrary[] MapLibs = new MLibrary[400];
 
-        void InitAllLibraries()
+        public void InitAllLibraries()
         {
-            //Wiz/War/Taon
+            //Wiz/War/Taon 巫师，战士，道士
             CreateLibraryList(ref CArmours, Settings.CArmourPath, "00");
             CreateLibraryList(ref CHair, Settings.CHairPath, "00");
             CreateLibraryList(ref CWeapons, Settings.CWeaponPath, "00");
             CreateLibraryList(ref CWeaponEffect, Settings.CWeaponEffectPath, "00");
             CreateLibraryList(ref CHumEffect, Settings.CHumEffectPath, "00");
-            //Assassin
+            //Assassin 刺客
             CreateLibraryList(ref AArmours, Settings.AArmourPath, "00");
             CreateLibraryList(ref AHair, Settings.AHairPath, "00");
             CreateLibraryList(ref AWeaponsL, Settings.AWeaponPath, "00", " L");
             CreateLibraryList(ref AWeaponsR, Settings.AWeaponPath, "00", " R");
             CreateLibraryList(ref AHumEffect, Settings.AHumEffectPath, "00");
-            //Archer
+            //Archer 弓箭手
             CreateLibraryList(ref ARArmours, Settings.ARArmourPath, "00");
             CreateLibraryList(ref ARHair, Settings.ARHairPath, "00");
             CreateLibraryList(ref ARWeapons, Settings.ARWeaponPath, "00");
             CreateLibraryList(ref ARWeaponsS, Settings.ARWeaponPath, "00", " S");
             CreateLibraryList(ref ARHumEffect, Settings.ARHumEffectPath, "00");
-            //Other
+            //Other 其他
             CreateLibraryList(ref Monsters, Settings.MonsterPath, "000");
             CreateLibraryList(ref Gates, Settings.GatePath, "00");
             CreateLibraryList(ref NPCs, Settings.NPCPath, "00");
@@ -452,7 +452,7 @@ namespace MLibraryUtils
         private BinaryReader _reader;
         private FileStream _fStream;
 
-        public FrameSet Frames
+        public FrameSet FrameSets
         {
             get { return _frames; }
         }
@@ -532,6 +532,7 @@ namespace MLibraryUtils
             return _images[index];
         }
 
+        //一般是绘制之前调用，加载texture
         public MImage CheckImage(int index)
         {
             if (!_initialized)
@@ -543,6 +544,56 @@ namespace MLibraryUtils
             if (_images[index] == null)
             {
                 _fStream.Position = _indexList[index];
+                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
+                _images[index] = new MImage(_reader);
+            }
+            MImage mi = _images[index];
+            if (!mi.TextureValid)
+            {
+                if ((mi.Width == 0) || (mi.Height == 0))
+                    return null;
+                _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
+                mi.CreateTexture(_reader);
+            }
+
+            return _images[index];
+        }
+
+        // LoadTextureWithOffsetXY 按照偏移，加载其中的图片
+        public MImage LoadTextureWithOffsetXY(int index, int alignX, int alignY){
+            if (!_initialized)
+                Initialize();
+             if (_images == null || index < 0 || index >= _images.Length)
+                return null;
+             if (_images[index] == null)
+            {
+                _fStream.Position = _indexList[index];
+                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
+                _images[index] = new MImage(_reader);
+            }
+            MImage mi = _images[index];
+            if (!mi.TextureValid)
+            {
+                if ((mi.Width == 0) || (mi.Height == 0))
+                    return null;
+                _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
+                mi.CreateTexture(_reader,alignX,alignY);
+            }
+            return _images[index];
+        }
+
+         public MImage CheckImageWithOffsetXY(int index,int offsetX,int offsetY)
+        {
+            if (!_initialized)
+                Initialize();
+
+            if (_images == null || index < 0 || index >= _images.Length)
+                return null;
+
+            if (_images[index] == null)
+            {
+                _fStream.Position = _indexList[index];
+                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
             MImage mi = _images[index];
@@ -591,7 +642,6 @@ namespace MLibraryUtils
                 _images[index] = null;
             }
         }
-
 
         private MImage[] getImageInfos()
         {
@@ -853,7 +903,6 @@ namespace MLibraryUtils
             if (HasMask)
             {
                 reader.ReadBytes(12);
-
                 //width, height, TextureFormat.RGBA32, Texture.GenerateAllMips, linear: false, IntPtr.Zero
                 MaskImage = new Texture2D(Width, Width);
                 decomp = DecompressImage(reader.ReadBytes(Length));
