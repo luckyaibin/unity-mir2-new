@@ -517,6 +517,7 @@ namespace MLibraryUtils
             return Vector2Int.zero;
         }
 
+        // 只加载图片的信息，不加载图片的 texture
         public MImage getMImageInfo(int index)
         {
             if (!_initialized) Initialize();

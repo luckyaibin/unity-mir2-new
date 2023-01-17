@@ -12,6 +12,7 @@ public class MirResourcesProcess : EditorWindow
     public string mirRootPath = "";
     public string resOutRootPathDefault = "Assets/Resources/mir";
     //输出的目录 衣服,头发,武器,武器效果,受伤效果(巫师,战士,道士)
+    static Libraries allLibs;
 
     [MenuItem("工具/处理mir2资源")]
     private static void ShowWindow()
@@ -19,8 +20,13 @@ public class MirResourcesProcess : EditorWindow
         var window = GetWindow<MirResourcesProcess>();
         window.titleContent = new GUIContent("处理资源");
         window.Show();
-    }
 
+        allLibs = new Libraries();
+        allLibs.InitAllLibraries();
+    }
+    private static void HideWindow(){
+        System.Console.Write("sss");
+    }
     private void OnGUI()
     {
         Settings.InitSettings(mirRootPathDefault);
@@ -55,22 +61,70 @@ public class MirResourcesProcess : EditorWindow
         //     };
         // }
         EditorGUILayout.EndHorizontal();
-        if (GUILayout.Button("导出"))
+        if (GUILayout.Button("导出衣服"))
         {
             EditorApplication.delayCall += () =>
             {
-                exportWizWarTaonRes(this);
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.CArmourPath + "/" + "CArmours.info";
+                exportWizWarTaonArmours(allLibs.CArmours,1,PLAYER, offsetPath);
+            };
+        }
+        if (GUILayout.Button("导出头发"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.CHairPath + "/" + "CHairs.info";
+                exportWizWarTaonArmours(allLibs.CHair,1,PLAYER, offsetPath);
+            };
+        }
+        if (GUILayout.Button("导出武器"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.CWeaponPath + "/" + "CWeapons.info";
+                exportWizWarTaonArmours(allLibs.CWeapons,1,PLAYER, offsetPath);
+            };
+        }
+        if (GUILayout.Button("导出武器效果"))
+        {
+            EditorApplication.delayCall +=  () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.CWeaponEffectPath + "/" + "CWeaponEffects.info";
+                exportWizWarTaonArmours(allLibs.CWeaponEffect,1,PLAYER, offsetPath);
+            };
+        }
+        if (GUILayout.Button("导出受伤效果"))
+        {
+            EditorApplication.delayCall +=  () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.CHumEffectPath + "/" + "CHumEffects.info";
+                exportWizWarTaonArmours(allLibs.CHumEffect,1,PLAYER, offsetPath);
             };
         }
         //-----------------------------------------
-
+        GUILayout.Label("--------------------------------------------------------------------------------------");
         if (GUILayout.Button("导出怪物动画资源"))
         {
-            EditorApplication.delayCall += exportMonsterRes;
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.MonsterPath + "/" + "CMonsters.info";
+                exportWizWarTaonArmours(allLibs.Monsters,1,MONSTER, offsetPath);
+            };
         }
         if (GUILayout.Button("导出NPC动画资源"))
         {
-            EditorApplication.delayCall += exportNpcRes;
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var offsetPath = Settings.NPCPath + "/" + "CNPCs.info";
+                exportWizWarTaonArmours(allLibs.NPCs,1,NPC, offsetPath);
+            };
         }
         //导出地图资源(导出的不是某个.map文件的每个格子的图片，而是每个格子对应的 libIndex 和imageIndex 对应的 图片。以及动画)
         if (GUILayout.Button("导出某个地图所引用到资源"))
@@ -79,20 +133,12 @@ public class MirResourcesProcess : EditorWindow
         }
     }
 
-    void exportWizWarTaonRes(MirResourcesProcess editorInstance)
+    void exportWizWarTaonArmours(MLibrary[] libs,int count, int animType,string offsetPath)
     {
-        Settings.InitSettings(editorInstance.mirRootPath);
-
-        var animType = PLAYER;
-        // alignOffsets 所有lib的偏移
         var alignOffsets = new List<Vector2Int>();
-        var libs = new Libraries();
-        libs.InitAllLibraries();
-        var count = 1;
-
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count && i < libs.Length; i++)
         {
-            var lib = libs.CArmours[i];
+            var lib = libs[i];
             var libPath = lib.getLibPath();
             var libName = Path.GetFileNameWithoutExtension(libPath);
             // E:/exp/mir2-2022.06.12.00/Build/Client/Data/XXX/01
@@ -109,9 +155,6 @@ public class MirResourcesProcess : EditorWindow
             // 导出一个库，并返回这个库的偏移
             var offset = exportOneLibImages(lib, finalPath);
             alignOffsets.Add(offset);
-
-            // TODO 导出这个库里的动画
-
             // 方向
             List<MirDirection> directions = new List<MirDirection>();
             if (animType == MONSTER || animType == PLAYER)
@@ -140,7 +183,6 @@ public class MirResourcesProcess : EditorWindow
                 AnimBuilder.BuildAnimationController(clips, controllerFilename);
             }
         }
-        var offsetPath = Settings.CArmourPath + "/" + "CArmours.info";
         //保存所有库对应的偏移数组
         saveOffsets(alignOffsets, offsetPath);
     }
@@ -160,6 +202,8 @@ public class MirResourcesProcess : EditorWindow
         var libs = new Libraries();
         libs.InitAllLibraries();
     }
+
+    // 导出一个库，并返回这个库的偏移
     Vector2Int exportOneLibImages(MLibrary library, string outDir)
     {
         library.Initialize();
@@ -241,7 +285,7 @@ public class MirResourcesProcess : EditorWindow
                 var clip = AnimBuilder.CreateOneFrameClip(clipName, frame.Interval, imagePaths);
                 clips.Add(Tuple.Create(action, dir, clip));
                 // //保存
-                AssetDatabase.CreateAsset(clip, imagePath + "/" + clipName + ".anim");
+                AssetDatabase.CreateAsset(clip, aniOutPath + "/" + clipName + ".anim");
                 AssetDatabase.SaveAssets();
             }
         }
