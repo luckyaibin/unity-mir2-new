@@ -24,7 +24,8 @@ public class MirResourcesProcess : EditorWindow
         allLibs = new Libraries();
         allLibs.InitAllLibraries();
     }
-    private static void HideWindow(){
+    private static void HideWindow()
+    {
         System.Console.Write("sss");
     }
     private void OnGUI()
@@ -66,8 +67,10 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.CArmourPath + "/" + "CArmours.info";
-                exportWizWarTaonArmours(allLibs.CArmours,1,PLAYER, offsetPath);
+                //var offsetPath = Settings.CArmourPath + "/" + "CArmour.info";
+                var xxx = Settings.CArmourPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CArmour.info";
+                exportWizWarTaonArmours(allLibs.CArmours, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出头发"))
@@ -75,8 +78,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.CHairPath + "/" + "CHairs.info";
-                exportWizWarTaonArmours(allLibs.CHair,1,PLAYER, offsetPath);
+                var xxx = Settings.CHairPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CHair.info";
+                exportWizWarTaonArmours(allLibs.CHair, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出武器"))
@@ -84,26 +88,29 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.CWeaponPath + "/" + "CWeapons.info";
-                exportWizWarTaonArmours(allLibs.CWeapons,1,PLAYER, offsetPath);
+                var xxx = Settings.CWeaponPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CWeapon.info";
+                exportWizWarTaonArmours(allLibs.CWeapons, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出武器效果"))
         {
-            EditorApplication.delayCall +=  () =>
+            EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.CWeaponEffectPath + "/" + "CWeaponEffects.info";
-                exportWizWarTaonArmours(allLibs.CWeaponEffect,1,PLAYER, offsetPath);
+                var xxx = Settings.CWeaponEffectPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CWeaponEffect.info";
+                exportWizWarTaonArmours(allLibs.CWeaponEffect, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出受伤效果"))
         {
-            EditorApplication.delayCall +=  () =>
+            EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.CHumEffectPath + "/" + "CHumEffects.info";
-                exportWizWarTaonArmours(allLibs.CHumEffect,1,PLAYER, offsetPath);
+                var xxx = Settings.CHumEffectPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CHumEffect.info";
+                exportWizWarTaonArmours(allLibs.CHumEffect, 1, PLAYER, offsetPath);
             };
         }
         //-----------------------------------------
@@ -113,8 +120,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.MonsterPath + "/" + "CMonsters.info";
-                exportWizWarTaonArmours(allLibs.Monsters,1,MONSTER, offsetPath);
+                var xxx = Settings.MonsterPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CMonster.info";
+                exportWizWarTaonArmours(allLibs.Monsters, 2, MONSTER, offsetPath);
             };
         }
         if (GUILayout.Button("导出NPC动画资源"))
@@ -122,8 +130,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var offsetPath = Settings.NPCPath + "/" + "CNPCs.info";
-                exportWizWarTaonArmours(allLibs.NPCs,1,NPC, offsetPath);
+                var xxx = Settings.NPCPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = xxx + "CNPC.info";
+                exportWizWarTaonArmours(allLibs.NPCs, 2, NPC, offsetPath);
             };
         }
         //导出地图资源(导出的不是某个.map文件的每个格子的图片，而是每个格子对应的 libIndex 和imageIndex 对应的 图片。以及动画)
@@ -133,7 +142,7 @@ public class MirResourcesProcess : EditorWindow
         }
     }
 
-    void exportWizWarTaonArmours(MLibrary[] libs,int count, int animType,string offsetPath)
+    void exportWizWarTaonArmours(MLibrary[] libs, int count, int animType, string offsetPath)
     {
         var alignOffsets = new List<Vector2Int>();
         for (int i = 0; i < count && i < libs.Length; i++)
@@ -177,9 +186,9 @@ public class MirResourcesProcess : EditorWindow
             if (frameSets != null)
             {
                 // 创建动画clip并保存
-                var clips = buildMirAnimationAndSave(lib, frameSets, directions, finalPath, finalPath + "/ani");
+                var clips = buildMirAnimationAndSave(lib, frameSets, directions, finalPath, finalPath + "/anim");
                 // 创建控制器
-                var controllerFilename = finalPath + "/ani" + "/" + libName + ".controller";
+                var controllerFilename = finalPath + "/anim" + "/" + libName + ".controller";
                 AnimBuilder.BuildAnimationController(clips, controllerFilename);
             }
         }
@@ -265,7 +274,7 @@ public class MirResourcesProcess : EditorWindow
         {
             dirInfo.Create();
         }
-        //aniOutPath = "Assets/Resources/mir/Data/CArmour/00/ani";
+        //aniOutPath = "Assets/Resources/mir/Data/CArmour/00/anim";
         var clips = new List<Tuple<MirAction, MirDirection, AnimationClip>>();
         foreach (var frameSet in frameSets) //遍历每个动作
         {

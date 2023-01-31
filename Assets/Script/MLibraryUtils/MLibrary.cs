@@ -172,6 +172,16 @@ namespace MLibraryUtils
             this.LoadUILibraries();
             this.LoadGameLibraries(); //crystal mir2中是用单独线程加载的
         }
+        public void DeinitAllLibraries()
+        {
+            foreach (var lib in MapLibs)
+            {
+                if (lib != null)
+                {
+                    lib.close();
+                }
+            }
+        }
         // 先叫这个名字，不确定都是干什么的Lib
         private void LoadUILibraries()
         {
