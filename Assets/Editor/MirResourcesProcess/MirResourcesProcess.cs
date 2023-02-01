@@ -11,6 +11,7 @@ public class MirResourcesProcess : EditorWindow
     public static string mirRootPathDefault = @"E:/exp/mir2-2022.06.12.00/Build/Client";
     public string mirRootPath = mirRootPathDefault;
     public string resOutRootPathDefault = "Assets/Resources/mir/";
+    public string guiLibName = "";
     //输出的目录 衣服,头发,武器,武器效果,受伤效果(巫师,战士,道士)
     static Libraries allLibs;
 
@@ -48,6 +49,8 @@ public class MirResourcesProcess : EditorWindow
             {
                 mirRootPath = EditorUtility.OpenFolderPanel("请选择", mirRootPath, "");
                 Settings.InitSettings(mirRootPathDefault);
+                allLibs = new Libraries();
+                allLibs.InitAllLibraries();
             };
         }
         EditorGUILayout.EndHorizontal();
@@ -81,7 +84,6 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.CHairPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CHair.info";
                 exportWizWarTaonAnimations(allLibs.CHair, 1, PLAYER, offsetPath);
@@ -91,7 +93,6 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.CWeaponPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CWeapon.info";
                 exportWizWarTaonAnimations(allLibs.CWeapons, 1, PLAYER, offsetPath);
@@ -101,7 +102,6 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.CWeaponEffectPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CWeaponEffect.info";
                 exportWizWarTaonAnimations(allLibs.CWeaponEffect, 1, PLAYER, offsetPath);
@@ -111,7 +111,6 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.CHumEffectPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CHumEffect.info";
                 exportWizWarTaonAnimations(allLibs.CHumEffect, 1, PLAYER, offsetPath);
@@ -123,7 +122,6 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.MonsterPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CMonster.info";
                 exportWizWarTaonAnimations(allLibs.Monsters, 2, MONSTER, offsetPath);
@@ -133,47 +131,109 @@ public class MirResourcesProcess : EditorWindow
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
                 var dst = Settings.NPCPath.Replace(mirRootPath, resOutRootPathDefault);
                 var offsetPath = dst + "CNPC.info";
                 exportWizWarTaonAnimations(allLibs.NPCs, 2, NPC, offsetPath);
             };
         }
         GUILayout.Label("--------------------------------------------------------------------------------------");
-        if (GUILayout.Button("导出UI图片(ChrSel)"))
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("UI图片名称:");
+        guiLibName = GUILayout.TextField(guiLibName);
+        GUILayout.EndHorizontal();
+        if (GUILayout.Button("导出UI图片(ChrSel,Prguse等)"))
         {
             EditorApplication.delayCall += () =>
             {
-                Settings.InitSettings(mirRootPath);
-                var dst = (mirRootPath + "/Data/ChrSel").Replace(mirRootPath, resOutRootPathDefault);
-                exportOneLibImages(allLibs.ChrSel, dst,false);
-            };
-        }
-        if (GUILayout.Button("导出UI图片(Prguse)"))
-        {
-            EditorApplication.delayCall += () =>
-            {
-                Settings.InitSettings(mirRootPath);
-                var dst = (mirRootPath + "/Data/Prguse").Replace(mirRootPath, resOutRootPathDefault);
-                exportOneLibImages(allLibs.Prguse, dst,false);
-            };
-        }
-        if (GUILayout.Button("导出UI图片(Prguse2)"))
-        {
-            EditorApplication.delayCall += () =>
-            {
-                Settings.InitSettings(mirRootPath);
-                var dst = (mirRootPath + "/Data/Prguse2").Replace(mirRootPath, resOutRootPathDefault);
-                exportOneLibImages(allLibs.Prguse2, dst,false);
-            };
-        }
-        if (GUILayout.Button("导出UI图片(Prguse3)"))
-        {
-            EditorApplication.delayCall += () =>
-            {
-                Settings.InitSettings(mirRootPath);
-                var dst = (mirRootPath + "/Data/Prguse3").Replace(mirRootPath, resOutRootPathDefault);
-                exportOneLibImages(allLibs.Prguse3, dst,false);
+                switch (guiLibName)
+                {
+                    case "ChrSel":
+                        var dst = (mirRootPath + "/Data/ChrSel").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.ChrSel, dst, false);
+                        break;
+                    case "Prguse":
+                        dst = (mirRootPath + "/Data/Prguse").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Prguse, dst, false);
+                        break;
+                    case "Prguse2":
+                        dst = (mirRootPath + "/Data/Prguse2").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Prguse2, dst, false);
+                        break;
+                    case "Prguse3":
+                        dst = (mirRootPath + "/Data/Prguse3").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Prguse3, dst, false);
+                        break;
+
+
+                    case "BuffIcon":
+                        dst = (mirRootPath + "/Data/BuffIcon").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.BuffIcon, dst, false);
+                        break;
+                    case "Help":
+                        dst = (mirRootPath + "/Data/Help").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Help, dst, false);
+                        break;
+                    case "MiniMap":
+                        dst = (mirRootPath + "/Data/MiniMap").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.MiniMap, dst, false);
+                        break;
+                     case "Title":
+                        dst = (mirRootPath + "/Data/Title").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Title, dst, false);
+                        break;
+                    case "MagIcon":
+                        dst = (mirRootPath + "/Data/MagIcon").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.MagIcon, dst, false);
+                        break;
+                    case "MagIcon2":
+                        dst = (mirRootPath + "/Data/MagIcon2").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.MagIcon2, dst, false);
+                        break;
+                    case "Magic":
+                        dst = (mirRootPath + "/Data/Magic").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Magic, dst, false);
+                        break;
+                    case "Effect":
+                        dst = (mirRootPath + "/Data/Effect").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Effect, dst, false);
+                        break;
+                    case "MagicC":
+                        dst = (mirRootPath + "/Data/MagicC").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.MagicC, dst, false);
+                        break;
+                    case "GuildSkill":
+                        dst = (mirRootPath + "/Data/GuildSkill").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.GuildSkill, dst, false);
+                        break;
+                    case "Background":
+                        dst = (mirRootPath + "/Data/Background").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Background, dst, false);
+                        break;
+                    case "Dragon":
+                        dst = (mirRootPath + "/Data/Dragon").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Dragon, dst, false);
+                        break;
+                    case "Items":
+                        dst = (mirRootPath + "/Data/Items").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Items, dst, false);
+                        break;
+                    case "StateItems":
+                        dst = (mirRootPath + "/Data/StateItems").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.StateItems, dst, false);
+                        break;
+                    case "FloorItems":
+                        dst = (mirRootPath + "/Data/FloorItems").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.FloorItems, dst, false);
+                        break;
+                    case "Deco":
+                        dst = (mirRootPath + "/Data/Deco").Replace(mirRootPath, resOutRootPathDefault);
+                        exportOneLibImages(allLibs.Deco, dst, false);
+                        break;
+                    default:
+                        Debug.Log("invalid resource" + guiLibName);
+                        break;
+                }
+
             };
         }
         GUILayout.Label("--------------------------------------------------------------------------------------");
@@ -256,7 +316,7 @@ public class MirResourcesProcess : EditorWindow
     }
 
     // 导出一个库，并返回这个库的偏移
-    Vector2Int exportOneLibImages(MLibrary library, string outDir, bool withOffset=true)
+    Vector2Int exportOneLibImages(MLibrary library, string outDir, bool withOffset = true)
     {
         var dirInfo = new DirectoryInfo(outDir);
         if (!dirInfo.Exists)

@@ -124,6 +124,7 @@ namespace MLibraryUtils
             //Other 其他
             CreateLibraryList(ref Monsters, Settings.MonsterPath, "000");
             CreateLibraryList(ref Gates, Settings.GatePath, "00");
+            CreateLibraryList(ref Flags,Settings.FlagPath,"00");
             CreateLibraryList(ref NPCs, Settings.NPCPath, "00");
             CreateLibraryList(ref Mounts, Settings.MountPath, "00");
             CreateLibraryList(ref Fishing, Settings.FishingPath, "00");
