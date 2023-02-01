@@ -8,9 +8,9 @@ using System;
 
 public class MirResourcesProcess : EditorWindow
 {
-    public string mirRootPathDefault = @"E:/exp/mir2-2022.06.12.00/Build/Client";
-    public string mirRootPath = "";
-    public string resOutRootPathDefault = "Assets/Resources/mir";
+    public static string mirRootPathDefault = @"E:/exp/mir2-2022.06.12.00/Build/Client";
+    public string mirRootPath = mirRootPathDefault;
+    public string resOutRootPathDefault = "Assets/Resources/mir/";
     //输出的目录 衣服,头发,武器,武器效果,受伤效果(巫师,战士,道士)
     static Libraries allLibs;
 
@@ -20,7 +20,7 @@ public class MirResourcesProcess : EditorWindow
         var window = GetWindow<MirResourcesProcess>();
         window.titleContent = new GUIContent("处理资源");
         window.Show();
-
+        Settings.InitSettings(mirRootPathDefault);
         allLibs = new Libraries();
         allLibs.InitAllLibraries();
     }
@@ -30,13 +30,16 @@ public class MirResourcesProcess : EditorWindow
     }
     private void OnGUI()
     {
-        Settings.InitSettings(mirRootPathDefault);
         // Data
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("资源根路径", EditorStyles.boldLabel);
         if (mirRootPath == "")
         {
-            mirRootPath = Settings.resRootPath;
+            mirRootPath = mirRootPathDefault;
+            //路径变了，需要重新生成资源
+            Settings.InitSettings(mirRootPathDefault);
+            allLibs = new Libraries();
+            allLibs.InitAllLibraries();
         }
         mirRootPath = EditorGUILayout.TextField(mirRootPath);
         if (GUILayout.Button("浏览"))
@@ -44,6 +47,7 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 mirRootPath = EditorUtility.OpenFolderPanel("请选择", mirRootPath, "");
+                Settings.InitSettings(mirRootPathDefault);
             };
         }
         EditorGUILayout.EndHorizontal();
@@ -68,9 +72,9 @@ public class MirResourcesProcess : EditorWindow
             {
                 Settings.InitSettings(mirRootPath);
                 //var offsetPath = Settings.CArmourPath + "/" + "CArmour.info";
-                var xxx = Settings.CArmourPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CArmour.info";
-                exportWizWarTaonArmours(allLibs.CArmours, 1, PLAYER, offsetPath);
+                var dst = Settings.CArmourPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CArmour.info";
+                exportWizWarTaonAnimations(allLibs.CArmours, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出头发"))
@@ -78,9 +82,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.CHairPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CHair.info";
-                exportWizWarTaonArmours(allLibs.CHair, 1, PLAYER, offsetPath);
+                var dst = Settings.CHairPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CHair.info";
+                exportWizWarTaonAnimations(allLibs.CHair, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出武器"))
@@ -88,9 +92,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.CWeaponPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CWeapon.info";
-                exportWizWarTaonArmours(allLibs.CWeapons, 1, PLAYER, offsetPath);
+                var dst = Settings.CWeaponPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CWeapon.info";
+                exportWizWarTaonAnimations(allLibs.CWeapons, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出武器效果"))
@@ -98,9 +102,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.CWeaponEffectPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CWeaponEffect.info";
-                exportWizWarTaonArmours(allLibs.CWeaponEffect, 1, PLAYER, offsetPath);
+                var dst = Settings.CWeaponEffectPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CWeaponEffect.info";
+                exportWizWarTaonAnimations(allLibs.CWeaponEffect, 1, PLAYER, offsetPath);
             };
         }
         if (GUILayout.Button("导出受伤效果"))
@@ -108,9 +112,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.CHumEffectPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CHumEffect.info";
-                exportWizWarTaonArmours(allLibs.CHumEffect, 1, PLAYER, offsetPath);
+                var dst = Settings.CHumEffectPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CHumEffect.info";
+                exportWizWarTaonAnimations(allLibs.CHumEffect, 1, PLAYER, offsetPath);
             };
         }
         //-----------------------------------------
@@ -120,9 +124,9 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.MonsterPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CMonster.info";
-                exportWizWarTaonArmours(allLibs.Monsters, 2, MONSTER, offsetPath);
+                var dst = Settings.MonsterPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CMonster.info";
+                exportWizWarTaonAnimations(allLibs.Monsters, 2, MONSTER, offsetPath);
             };
         }
         if (GUILayout.Button("导出NPC动画资源"))
@@ -130,11 +134,49 @@ public class MirResourcesProcess : EditorWindow
             EditorApplication.delayCall += () =>
             {
                 Settings.InitSettings(mirRootPath);
-                var xxx = Settings.NPCPath.Replace(mirRootPath, resOutRootPathDefault);
-                var offsetPath = xxx + "CNPC.info";
-                exportWizWarTaonArmours(allLibs.NPCs, 2, NPC, offsetPath);
+                var dst = Settings.NPCPath.Replace(mirRootPath, resOutRootPathDefault);
+                var offsetPath = dst + "CNPC.info";
+                exportWizWarTaonAnimations(allLibs.NPCs, 2, NPC, offsetPath);
             };
         }
+        GUILayout.Label("--------------------------------------------------------------------------------------");
+        if (GUILayout.Button("导出UI图片(ChrSel)"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var dst = (mirRootPath + "/Data/ChrSel").Replace(mirRootPath, resOutRootPathDefault);
+                exportOneLibImages(allLibs.ChrSel, dst,false);
+            };
+        }
+        if (GUILayout.Button("导出UI图片(Prguse)"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var dst = (mirRootPath + "/Data/Prguse").Replace(mirRootPath, resOutRootPathDefault);
+                exportOneLibImages(allLibs.Prguse, dst,false);
+            };
+        }
+        if (GUILayout.Button("导出UI图片(Prguse2)"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var dst = (mirRootPath + "/Data/Prguse2").Replace(mirRootPath, resOutRootPathDefault);
+                exportOneLibImages(allLibs.Prguse2, dst,false);
+            };
+        }
+        if (GUILayout.Button("导出UI图片(Prguse3)"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                Settings.InitSettings(mirRootPath);
+                var dst = (mirRootPath + "/Data/Prguse3").Replace(mirRootPath, resOutRootPathDefault);
+                exportOneLibImages(allLibs.Prguse3, dst,false);
+            };
+        }
+        GUILayout.Label("--------------------------------------------------------------------------------------");
         //导出地图资源(导出的不是某个.map文件的每个格子的图片，而是每个格子对应的 libIndex 和imageIndex 对应的 图片。以及动画)
         if (GUILayout.Button("导出某个地图所引用到资源"))
         {
@@ -142,7 +184,7 @@ public class MirResourcesProcess : EditorWindow
         }
     }
 
-    void exportWizWarTaonArmours(MLibrary[] libs, int count, int animType, string offsetPath)
+    void exportWizWarTaonAnimations(MLibrary[] libs, int count, int animType, string offsetPath)
     {
         var alignOffsets = new List<Vector2Int>();
         for (int i = 0; i < count && i < libs.Length; i++)
@@ -154,7 +196,8 @@ public class MirResourcesProcess : EditorWindow
             var path = libPath.Replace(MLibrary.Extention, "");
             // 替换成为 Asset下的相对路径
             // E:/exp/mir2-2022.06.12.00/Build/Client/Data/XXX/01 -> XXX/01
-            var finalPath = path.Replace(Settings.resRootPath, resOutRootPathDefault);
+            var dst = Settings.resRootPath;
+            var finalPath = path.Replace(dst, resOutRootPathDefault);
             System.Console.WriteLine("write file {0} to {1}", libPath, finalPath);
             var dirInfo = new DirectoryInfo(finalPath);
             if (!dirInfo.Exists)
@@ -213,8 +256,13 @@ public class MirResourcesProcess : EditorWindow
     }
 
     // 导出一个库，并返回这个库的偏移
-    Vector2Int exportOneLibImages(MLibrary library, string outDir)
+    Vector2Int exportOneLibImages(MLibrary library, string outDir, bool withOffset=true)
     {
+        var dirInfo = new DirectoryInfo(outDir);
+        if (!dirInfo.Exists)
+        {
+            dirInfo.Create();
+        }
         library.Initialize();
         Vector2Int alignOffset = new Vector2Int(0, 0);
         // 找出所有图片的偏移
@@ -244,7 +292,17 @@ public class MirResourcesProcess : EditorWindow
             {
                 continue;
             }
-            var textureOKImage = library.LoadTextureWithOffsetXY(imageIndex, alignOffset.x, alignOffset.y);
+            MImage textureOKImage = null;
+            if (withOffset)
+            {
+                //带偏移的话是把所有图片按照左下角对齐，方便生成帧动画
+                textureOKImage = library.LoadTextureWithOffsetXY(imageIndex, alignOffset.x, alignOffset.y);
+            }
+            else
+            {
+                //不带偏移，直接就是ui的图片
+                textureOKImage = library.LoadTextureNoOffsetXY(imageIndex);
+            }
             if (textureOKImage == null)
             {
                 continue;
@@ -263,6 +321,7 @@ public class MirResourcesProcess : EditorWindow
     public const int MONSTER = 1;
 
     public const int PLAYER = 2;
+
     List<Tuple<MirAction, MirDirection, AnimationClip>> buildMirAnimationAndSave(MLibrary library, FrameSet frameSets, List<MirDirection> directions, string imagePath, string aniOutPath)
     {
         if (File.Exists(aniOutPath))

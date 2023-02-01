@@ -14,32 +14,32 @@ namespace MLibraryUtils
         public static int Count, Progress;
 
         //单独的Lib
-        public readonly MLibrary
-            ChrSel = new MLibrary(Settings.DataPath + "ChrSel"),
-            Prguse = new MLibrary(Settings.DataPath + "Prguse"),
-            Prguse2 = new MLibrary(Settings.DataPath + "Prguse2"),
-            Prguse3 = new MLibrary(Settings.DataPath + "Prguse3"),
-            BuffIcon = new MLibrary(Settings.DataPath + "BuffIcon"),
-            Help = new MLibrary(Settings.DataPath + "Help"),
-            MiniMap = new MLibrary(Settings.DataPath + "MMap"),
-            Title = new MLibrary(Settings.DataPath + "Title"),
-            MagIcon = new MLibrary(Settings.DataPath + "MagIcon"),
-            MagIcon2 = new MLibrary(Settings.DataPath + "MagIcon2"),
-            Magic = new MLibrary(Settings.DataPath + "Magic"),
-            Magic2 = new MLibrary(Settings.DataPath + "Magic2"),
-            Magic3 = new MLibrary(Settings.DataPath + "Magic3"),
-            Effect = new MLibrary(Settings.DataPath + "Effect"),
-            MagicC = new MLibrary(Settings.DataPath + "MagicC"),
-            GuildSkill = new MLibrary(Settings.DataPath + "GuildSkill"),
-            Background = new MLibrary(Settings.DataPath + "Background"),
-            Dragon = new MLibrary(Settings.DataPath + "Dragon"),
+        public MLibrary
+            ChrSel,
+            Prguse,
+            Prguse2,
+            Prguse3,
+            BuffIcon,
+            Help,
+            MiniMap,
+            Title,
+            MagIcon,
+            MagIcon2,
+            Magic,
+            Magic2,
+            Magic3,
+            Effect,
+            MagicC,
+            GuildSkill,
+            Background,
+            Dragon,
             //Items
-            Items = new MLibrary(Settings.DataPath + "Items"),
-            StateItems = new MLibrary(Settings.DataPath + "StateItem"),
-            FloorItems = new MLibrary(Settings.DataPath + "DNItems"),
+            Items,
+            StateItems,
+            FloorItems,
 
             //Deco
-            Deco = new MLibrary(Settings.DataPath + "Deco");
+            Deco ;
 
         // 多个的lib数组
         public MLibrary[]
@@ -74,6 +74,35 @@ namespace MLibraryUtils
 
         public void InitAllLibraries()
         {
+            //=================基础的UI库========================
+            ChrSel = new MLibrary(Settings.DataPath + "ChrSel");
+            Prguse = new MLibrary(Settings.DataPath + "Prguse");
+            Prguse2 = new MLibrary(Settings.DataPath + "Prguse2");
+            Prguse3 = new MLibrary(Settings.DataPath + "Prguse3");
+            BuffIcon = new MLibrary(Settings.DataPath + "BuffIcon");
+            Help = new MLibrary(Settings.DataPath + "Help");
+            MiniMap = new MLibrary(Settings.DataPath + "MMap");
+            Title = new MLibrary(Settings.DataPath + "Title");
+            MagIcon = new MLibrary(Settings.DataPath + "MagIcon");
+            MagIcon2 = new MLibrary(Settings.DataPath + "MagIcon2");
+            Magic = new MLibrary(Settings.DataPath + "Magic");
+            Magic2 = new MLibrary(Settings.DataPath + "Magic2");
+            Magic3 = new MLibrary(Settings.DataPath + "Magic3");
+            Effect = new MLibrary(Settings.DataPath + "Effect");
+            MagicC = new MLibrary(Settings.DataPath + "MagicC");
+            GuildSkill = new MLibrary(Settings.DataPath + "GuildSkill");
+            Background = new MLibrary(Settings.DataPath + "Background");
+            Dragon = new MLibrary(Settings.DataPath + "Dragon");
+            //Items
+            Items = new MLibrary(Settings.DataPath + "Items");
+            StateItems = new MLibrary(Settings.DataPath + "StateItem");
+            FloorItems = new MLibrary(Settings.DataPath + "DNItems");
+
+            //Deco
+            Deco = new MLibrary(Settings.DataPath + "Deco");
+
+            //====================其他动画库=================
+
             //Wiz/War/Taon 巫师，战士，道士
             CreateLibraryList(ref CArmours, Settings.CArmourPath, "00");
             CreateLibraryList(ref CHair, Settings.CHairPath, "00");
@@ -428,7 +457,7 @@ namespace MLibraryUtils
             }
         }
 
-       private void CreateLibraryList(ref MLibrary[] library, string path, string toStringValue, string suffix = "")
+        private void CreateLibraryList(ref MLibrary[] library, string path, string toStringValue, string suffix = "")
         {
             var allFiles = Directory.GetFiles(path, "*" + suffix + MLibrary.Extention, SearchOption.TopDirectoryOnly);
             //Array.Sort(allFiles, new FileNameComparer());
@@ -451,7 +480,7 @@ namespace MLibraryUtils
         public const string Extention = ".Lib";
         public const int LibVersion = 3;
 
-        private readonly string _fileName;
+        private string _fileName;
 
         private MImage[] _images;
         private FrameSet _frames;
@@ -555,7 +584,7 @@ namespace MLibraryUtils
             if (_images[index] == null)
             {
                 _fStream.Position = _indexList[index];
-                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
+                _fStream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
             MImage mi = _images[index];
@@ -571,15 +600,16 @@ namespace MLibraryUtils
         }
 
         // LoadTextureWithOffsetXY 按照偏移，加载其中的图片
-        public MImage LoadTextureWithOffsetXY(int index, int alignX, int alignY){
+        public MImage LoadTextureWithOffsetXY(int index, int alignX, int alignY)
+        {
             if (!_initialized)
                 Initialize();
-             if (_images == null || index < 0 || index >= _images.Length)
+            if (_images == null || index < 0 || index >= _images.Length)
                 return null;
-             if (_images[index] == null)
+            if (_images[index] == null)
             {
                 _fStream.Position = _indexList[index];
-                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
+                _fStream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
             MImage mi = _images[index];
@@ -588,12 +618,34 @@ namespace MLibraryUtils
                 if ((mi.Width == 0) || (mi.Height == 0))
                     return null;
                 _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
-                mi.CreateTexture(_reader,alignX,alignY);
+                mi.CreateTexture(_reader, alignX, alignY);
+            }
+            return _images[index];
+        }
+        public MImage LoadTextureNoOffsetXY(int index)
+        {
+            if (!_initialized)
+                Initialize();
+            if (_images == null || index < 0 || index >= _images.Length)
+                return null;
+            if (_images[index] == null)
+            {
+                _fStream.Position = _indexList[index];
+                _fStream.Seek(_indexList[index], SeekOrigin.Begin);
+                _images[index] = new MImage(_reader);
+            }
+            MImage mi = _images[index];
+            if (!mi.TextureValid)
+            {
+                if ((mi.Width == 0) || (mi.Height == 0))
+                    return null;
+                _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
+                mi.CreateTexture(_reader);
             }
             return _images[index];
         }
 
-         public MImage CheckImageWithOffsetXY(int index,int offsetX,int offsetY)
+        public MImage CheckImageWithOffsetXY(int index, int offsetX, int offsetY)
         {
             if (!_initialized)
                 Initialize();
@@ -604,7 +656,7 @@ namespace MLibraryUtils
             if (_images[index] == null)
             {
                 _fStream.Position = _indexList[index];
-                _fStream.Seek(_indexList[index],SeekOrigin.Begin);
+                _fStream.Seek(_indexList[index], SeekOrigin.Begin);
                 _images[index] = new MImage(_reader);
             }
             MImage mi = _images[index];

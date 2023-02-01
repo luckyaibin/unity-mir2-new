@@ -30,6 +30,7 @@ public abstract class Packet
         }
         catch (System.Exception e)
         {
+            Debug.Log(e);
             return null;
         }
         // 剩余的数据，返回回去，下一次拆包处理
