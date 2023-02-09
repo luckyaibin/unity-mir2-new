@@ -189,7 +189,7 @@ public class MirResourcesProcess : EditorWindow
                         dst = (mirRootPath + "/Data/MagIcon2").Replace(mirRootPath, resOutRootPathDefault);
                         exportOneLibImages(allLibs.MagIcon2, dst, false);
                         break;
-                    case "Magic":
+                    case "Magic":// 应该导出 magic animation,not ui.
                         dst = (mirRootPath + "/Data/Magic").Replace(mirRootPath, resOutRootPathDefault);
                         exportOneLibImages(allLibs.Magic, dst, false);
                         break;

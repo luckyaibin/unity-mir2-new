@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class TestPlayerObject : MonoBehaviour
 {
-    private ObjectPlayer objectPlayer;
+    private ObjectPlayer objectPlayerData;
 
-    private PlayerObjectBuilder playerObjectBuilder;
+    //private PlayerObjectBuilder playerObjectBuilder;
 
+    //代码创建
     private PlayerController playerController;
 
     private MirAction mirAction = MirAction.Standing;
@@ -18,32 +19,38 @@ public class TestPlayerObject : MonoBehaviour
     public GameObject testSpell;
 
     private void Awake(){
-        this.objectPlayer = new ObjectPlayer{
+        this.objectPlayerData = new ObjectPlayer{
             Hair = 0,
             Armour = 0,
             Weapon = 0,
-            Location = new Vector2(1,1),
+            Location = new Vector2(0,0),
             Direction = MirDirection.Up,
             Name = "testPlayer"
         };
+        var localPos = this.transform.localPosition;
+        Debug.LogFormat( "当前坐标: {0},{1},{2}",localPos.x,localPos.y,localPos.z );
+        this.playerController = this.gameObject.AddComponent<PlayerController>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        this.playerObjectBuilder = new PlayerObjectBuilder();
-        var tmp = playerObjectBuilder.gameObject(objectPlayer);
-        this.playerController = tmp.GetComponent<PlayerController>();
+        // this.playerObjectBuilder = new PlayerObjectBuilder();
+        // var tmp = playerObjectBuilder.gameObject(objectPlayerData);
+        // //tmp.transform.SetParent()
+        // this.playerController = tmp.AddComponent<PlayerController>();
+
+        this.playerController.onInit(this.objectPlayerData);
     }
 
     public void onDirectionClick(MirDirection direction){
         this.mirDirection = direction;
-        this.playerController.playAnimAll(this.mirAction,this.mirDirection);
+        this.playerController.playAnimArmourHairWeapon(this.mirAction,this.mirDirection);
     }
 
     public void onActionClick(MirAction action){
         this.mirAction = action;
-        this.playerController.playAnimAll(this.mirAction,this.mirDirection);
+        this.playerController.playAnimArmourHairWeapon(this.mirAction,this.mirDirection);
     }
 
     // Update is called once per frame

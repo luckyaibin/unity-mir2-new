@@ -14,17 +14,18 @@ public class HairObjectBuilder : MirObjectBuilder<ObjectPlayer>
     public override GameObject gameObject(ObjectPlayer objectPlayer, Transform parent)
     {
         var npcPrefab = getPrefab("prefabs/npc");
-        var anim = npcPrefab.GetComponent<Animator>();
+        //TODO 先Instantiate实例化，再设置动画？
+        var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab, parent);
+        var offset = offsets[objectPlayer.Hair];
+        // mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
+        mirGameObject.transform.localPosition = new Vector3(-offset.x,-offset.y,0);
+        mirGameObject.name = "hair";
+
+        var anim = mirGameObject.GetComponent<Animator>();
         var resIndex = objectPlayer.Hair.ToString("00");
         var runtimeAnimatorControllerPath = RES_DIR + resIndex + "/anim/" + resIndex;
         anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(runtimeAnimatorControllerPath);
 
-        //TODO 先Instantiate实例化，再设置动画？
-        var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab, parent);
-        var offset = offsets[objectPlayer.Hair];
-
-        mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
-        mirGameObject.name = "hair";
 
         var spriteRenderer = mirGameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.sortingOrder = (int)objectPlayer.Location.y + 1000 + 1;

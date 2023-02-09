@@ -646,31 +646,31 @@ namespace MLibraryUtils
             return _images[index];
         }
 
-        public MImage CheckImageWithOffsetXY(int index, int offsetX, int offsetY)
-        {
-            if (!_initialized)
-                Initialize();
+        // public MImage CheckImageWithOffsetXY(int index, int offsetX, int offsetY)
+        // {
+        //     if (!_initialized)
+        //         Initialize();
 
-            if (_images == null || index < 0 || index >= _images.Length)
-                return null;
+        //     if (_images == null || index < 0 || index >= _images.Length)
+        //         return null;
 
-            if (_images[index] == null)
-            {
-                _fStream.Position = _indexList[index];
-                _fStream.Seek(_indexList[index], SeekOrigin.Begin);
-                _images[index] = new MImage(_reader);
-            }
-            MImage mi = _images[index];
-            if (!mi.TextureValid)
-            {
-                if ((mi.Width == 0) || (mi.Height == 0))
-                    return null;
-                _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
-                mi.CreateTexture(_reader);
-            }
+        //     if (_images[index] == null)
+        //     {
+        //         _fStream.Position = _indexList[index];
+        //         _fStream.Seek(_indexList[index], SeekOrigin.Begin);
+        //         _images[index] = new MImage(_reader);
+        //     }
+        //     MImage mi = _images[index];
+        //     if (!mi.TextureValid)
+        //     {
+        //         if ((mi.Width == 0) || (mi.Height == 0))
+        //             return null;
+        //         _fStream.Seek(_indexList[index] + 17, SeekOrigin.Begin);
+        //         mi.CreateTexture(_reader);
+        //     }
 
-            return _images[index];
-        }
+        //     return _images[index];
+        // }
 
         public int getCount()
         {

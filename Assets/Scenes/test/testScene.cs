@@ -12,17 +12,36 @@ public class testScene : MonoBehaviour
     public GameObject itemPrefab;
 
     private List<Tuple<MirAction, string>> mirAction;
+    private List<Tuple<MirDirection, string>> mirDirections;
 
-    private ScrollRect sv;
-    private Transform svContent;
+    private ScrollRect svAct;
+    private Transform svContentAct;
+
+    private ScrollRect svDir;
+    private Transform svContentDir;
+
     void Awake()
     {
-        mirAction = getMirActionForPlayer();
-        var svobj = this.getSiblingOf(this.transform, "Canvas/Scroll View");
+        this.mirAction = getMirActionForPlayer();
+        this.mirDirections = new List<Tuple<MirDirection, string>>
+        {
+           Tuple.Create(MirDirection.UpLeft, "↖"),
+           Tuple.Create(MirDirection.Up, "↑"),
+           Tuple.Create(MirDirection.UpRight, "↗"),
+           Tuple.Create(MirDirection.Left,  "←"),
+           //Tuple.Create(MirDirection.UpLeft, "+"),
+           Tuple.Create(MirDirection.Right, "→"),
+           Tuple.Create(MirDirection.DownLeft,  "↙"),
+           Tuple.Create(MirDirection.Down, "↓"),
+           Tuple.Create(MirDirection.DownRight, "↘")
+        };
+        var svobj1 = this.getSiblingOf(this.transform, "Canvas/Scroll View1");
+        this.svContentAct = svobj1.Find("Viewport/Content");
+        this.svAct = svobj1.GetComponent<ScrollRect>();
 
-        //var svobj = parent.Find("Canvas/ScrollView");
-        this.svContent = svobj.Find("Viewport/Content");
-        this.sv = svobj.GetComponent<ScrollRect>();
+        var svobj2 = this.getSiblingOf(this.transform, "Canvas/Scroll View2");
+        this.svContentDir = svobj2.Find("Viewport/Content");
+        this.svDir = svobj2.GetComponent<ScrollRect>();
     }
     // Start is called before the first frame update
     void Start()
@@ -32,11 +51,39 @@ public class testScene : MonoBehaviour
         foreach (var act in this.mirAction)
         {
             var itemInstance = UnityEngine.Object.Instantiate(itemPrefab);
-            itemInstance.transform.parent = this.svContent;
+            itemInstance.transform.SetParent(this.svContentAct);
             var itemComponent = itemInstance.GetComponent<Item>();
             //设置元素属性
             itemComponent.Init(act.Item2);
+            var btn = itemInstance.GetComponent<UnityEngine.UI.Button>();
+            btn.onClick.AddListener(delegate
+            {
+                this.onClickAct(act);
+            });
         }
+        foreach (var dir in this.mirDirections)
+        {
+            var itemInstance = UnityEngine.Object.Instantiate(itemPrefab);
+            itemInstance.transform.SetParent(this.svContentDir);
+            var itemComponent = itemInstance.GetComponent<Item>();
+            //设置元素属性
+            itemComponent.Init(dir.Item2);
+            var btn = itemInstance.GetComponent<UnityEngine.UI.Button>();
+            btn.onClick.AddListener(delegate
+            {
+                this.onClickDir(dir);
+            });
+        }
+    }
+
+    void onClickAct(Tuple<MirAction, string> act)
+    {
+        testPlayerObject.onActionClick(act.Item1);
+    }
+
+    void onClickDir(Tuple<MirDirection, string> dir)
+    {
+        testPlayerObject.onDirectionClick(dir.Item1);
     }
 
     // Update is called once per frame
@@ -44,6 +91,8 @@ public class testScene : MonoBehaviour
     {
 
     }
+
+
 
     private List<Tuple<MirAction, string>> getMirActionForPlayer()
     {

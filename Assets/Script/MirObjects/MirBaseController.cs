@@ -7,45 +7,45 @@ public abstract class MirBaseController : MonoBehaviour
     protected static readonly string Mir_Direction = "MirDirection";
     protected static readonly string Mir_Action = "MirAction";
 
-    protected Animator animator;
+    //protected Animator animator;
 
-    protected List<Tuple<MirAction, MirDirection>> actions = new List<Tuple<MirAction, MirDirection>>();
+    //protected List<Tuple<MirAction, MirDirection>> actions = new List<Tuple<MirAction, MirDirection>>();
 
     protected Vector2 objectNameSize;
     protected GUIStyle objectNameStyle;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        AnimationClip[] clips = new AnimationClip[0];
-        if (animator != null)
-        {
-            clips = animator?.runtimeAnimatorController?.animationClips;
-        }
-        if (clips == null || clips.Length == 0) return;
+        // animator = GetComponent<Animator>();
+        // AnimationClip[] clips = new AnimationClip[0];
+        // if (animator != null)
+        // {
+        //     clips = animator?.runtimeAnimatorController?.animationClips;
+        // }
+        // if (clips == null || clips.Length == 0) return;
 
-        foreach (var clip in clips)
-        {
-            var actionDirection = clip.name.Split('_');
-            var mirAction = (MirAction)Enum.Parse(typeof(MirAction), actionDirection[0]);
-            var mirDirection = (MirDirection)Enum.Parse(typeof(MirDirection), actionDirection[1]);
-            this.actions.Add(Tuple.Create(mirAction, mirDirection));
+        // foreach (var clip in clips)
+        // {
+        //     var actionDirection = clip.name.Split('_');
+        //     var mirAction = (MirAction)Enum.Parse(typeof(MirAction), actionDirection[0]);
+        //     var mirDirection = (MirDirection)Enum.Parse(typeof(MirDirection), actionDirection[1]);
+        //     this.actions.Add(Tuple.Create(mirAction, mirDirection));
 
 
-            var animEvent = new AnimationEvent();
-            animEvent.time = clip.length;
-            animEvent.functionName = "clipCallback";
-            animEvent.stringParameter = clip.name;
+        //     var animEvent = new AnimationEvent();
+        //     animEvent.time = clip.length;
+        //     animEvent.functionName = "clipCallback";
+        //     animEvent.stringParameter = clip.name;
 
-            clip.AddEvent(animEvent);
-        }
+        //     clip.AddEvent(animEvent);
+        // }
     }
     private void Start()
     {
-        this.onStart();
+
     }
 
-    protected abstract void onStart();
+   public abstract void onInit(System.Object data);
 
     protected abstract Vector2 getObjectOffset();
 

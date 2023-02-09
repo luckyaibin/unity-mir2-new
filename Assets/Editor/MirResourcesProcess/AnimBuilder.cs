@@ -25,9 +25,16 @@ public static class AnimBuilder
         float frameTime = interval / 1000f;
         for (int i = 0; i < imagePaths.Length; i++)
         {
+            // String assetPath = imagePaths[i];
+            // //var sprite0 = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+            // Texture2D sprite = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+
+            // keyFrames[i] = new ObjectReferenceKeyframe();
+            // keyFrames[i].time = frameTime * i;
+            // keyFrames[i].value = sprite;
+
             String assetPath = imagePaths[i];
-            //var sprite0 = AssetDatabase.LoadAllAssetsAtPath(assetPath);
-            Texture2D sprite = AssetDatabase.LoadAssetAtPath<Texture2D>(assetPath);
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
 
             keyFrames[i] = new ObjectReferenceKeyframe();
             keyFrames[i].time = frameTime * i;

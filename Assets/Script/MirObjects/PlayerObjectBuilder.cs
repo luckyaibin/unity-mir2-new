@@ -10,23 +10,27 @@ public class PlayerObjectBuilder : MirObjectBuilder<ObjectPlayer>
     private static string OFFSET_INFO_PATH = "Assets/Resources/mir/Data/CArmour/CArmour.info";
     public static List<Vector2Int> offsets = readOffsets(OFFSET_INFO_PATH);
 
-    public override GameObject gameObject(ObjectPlayer objectPlayer)
+    public override GameObject gameObject(ObjectPlayer objectPlayer, Transform parent)
     {
         var npcPrefab = getPrefab("prefabs/npc");
-        var anim = npcPrefab.GetComponent<Animator>();
+
+        //TODO 先Instantiate实例化，再设置动画？
+        var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab, parent);
+        var offset = offsets[objectPlayer.Armour];
+
+        // mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
+        mirGameObject.transform.localPosition = new Vector3(-offset.x, -offset.y, 0);
+        mirGameObject.transform.rotation = Quaternion.identity;
+
+        var anim = mirGameObject.GetComponent<Animator>();
         var resIndex = objectPlayer.Armour.ToString("00");
         var runtimeAnimatorControllerPath = RES_DIR + resIndex + "/anim/" + resIndex;
         anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>(runtimeAnimatorControllerPath);
 
-        //TODO 先Instantiate实例化，再设置动画？
-        var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab);
-        var offset = offsets[objectPlayer.Armour];
 
-        mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
-        mirGameObject.transform.rotation = Quaternion.identity;
-        mirGameObject.name = "objectPlayer(" + objectPlayer.Name + ")"; ;
+        mirGameObject.name = "CodeCreateObjectPlayer(" + objectPlayer.Name + ")"; ;
         var animController = mirGameObject.AddComponent<PlayerController>();
-        animController.objectPlayer = objectPlayer;
+        animController.objectPlayerData = objectPlayer;
         var spriteRenderer = mirGameObject.GetComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerName = "map_front";
         spriteRenderer.sortingOrder = (int)objectPlayer.Location.y + 1000;

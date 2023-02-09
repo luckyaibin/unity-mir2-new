@@ -64,6 +64,6 @@ public abstract class MirObjectBuilder<T> where T : Packet
     public static Vector3 calcPosition(Vector2 npcPosition,Vector2 offset){
         var x = npcPosition.x * Config.MAP_TILE_WIDTH  + offset.x;
         var y = npcPosition.y * Config.MAP_TILE_HEIGHT + offset.y;
-        return new Vector3(x,-y,0);
+        return new Vector3(-x,-y,0);
     }
 }
