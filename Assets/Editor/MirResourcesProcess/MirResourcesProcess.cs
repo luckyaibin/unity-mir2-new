@@ -12,6 +12,7 @@ public class MirResourcesProcess : EditorWindow
     public string mirRootPath = mirRootPathDefault;
     public string resOutRootPathDefault = "Assets/Resources/mir/";
     public string guiLibName = "";
+    public string gMapLibName = "";
     //输出的目录 衣服,头发,武器,武器效果,受伤效果(巫师,战士,道士)
     static Libraries allLibs;
 
@@ -177,7 +178,7 @@ public class MirResourcesProcess : EditorWindow
                         dst = (mirRootPath + "/Data/MiniMap").Replace(mirRootPath, resOutRootPathDefault);
                         exportOneLibImages(allLibs.MiniMap, dst, false);
                         break;
-                     case "Title":
+                    case "Title":
                         dst = (mirRootPath + "/Data/Title").Replace(mirRootPath, resOutRootPathDefault);
                         exportOneLibImages(allLibs.Title, dst, false);
                         break;
@@ -236,6 +237,42 @@ public class MirResourcesProcess : EditorWindow
 
             };
         }
+
+        GUILayout.Label("--------------------------------------------------------------------------------------");
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("地图编号(代码MapLibs里查看):");
+        gMapLibName = GUILayout.TextField(gMapLibName);
+        GUILayout.EndHorizontal();
+        if (GUILayout.Button("导出地图资源图片"))
+        {
+            EditorApplication.delayCall += () =>
+            {
+                var gMapLibIndex = int.Parse(gMapLibName);
+                var maplib = allLibs.MapLibs[gMapLibIndex];
+                if (maplib == null)
+                {
+                    return;
+                }
+                var libPath = maplib.getLibPath();
+                var libName = Path.GetFileNameWithoutExtension(libPath);
+                var path = libPath.Replace(MLibrary.Extention, "");
+                var dst = Settings.resRootPath;
+                var finalPath = path.Replace(dst, resOutRootPathDefault);
+                var dirInfo = new DirectoryInfo(finalPath);
+                if (!dirInfo.Exists)
+                {
+                    dirInfo.Create();
+                }
+                try
+                {
+                    exportOneLibImages(maplib, finalPath, false, 1000);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogFormat("导出出错了{0}", libName);
+                }
+            };
+        }
         GUILayout.Label("--------------------------------------------------------------------------------------");
         //导出地图资源(导出的不是某个.map文件的每个格子的图片，而是每个格子对应的 libIndex 和imageIndex 对应的 图片。以及动画)
         if (GUILayout.Button("导出某个地图所引用到资源"))
@@ -265,7 +302,7 @@ public class MirResourcesProcess : EditorWindow
                 dirInfo.Create();
             }
             // 导出一个库，并返回这个库的偏移
-            var offset = exportOneLibImages(lib, finalPath);
+            var offset = exportOneLibImages(lib, finalPath, true);
             alignOffsets.Add(offset);
             // 方向
             List<MirDirection> directions = new List<MirDirection>();
@@ -316,7 +353,7 @@ public class MirResourcesProcess : EditorWindow
     }
 
     // 导出一个库，并返回这个库的偏移
-    Vector2Int exportOneLibImages(MLibrary library, string outDir, bool withOffset = true)
+    Vector2Int exportOneLibImages(MLibrary library, string outDir, bool withOffset = false, int count = -1)
     {
         var dirInfo = new DirectoryInfo(outDir);
         if (!dirInfo.Exists)
@@ -325,6 +362,7 @@ public class MirResourcesProcess : EditorWindow
         }
         library.Initialize();
         Vector2Int alignOffset = new Vector2Int(0, 0);
+
         // 找出所有图片的偏移
         for (int i = 0; i < library.getCount(); i++)
         {
@@ -343,9 +381,12 @@ public class MirResourcesProcess : EditorWindow
             }
         }
 
-
+        if (count == -1)
+        { //导出部分(可能map图片太多，导致unity卡顿)
+            count = library.getCount();
+        }
         // 遍历图片，并按照偏移加载里面的texture，然后存储
-        for (int imageIndex = 0; imageIndex < library.getCount(); imageIndex++)
+        for (int imageIndex = 0; imageIndex < count; imageIndex++)
         {
             var pngFilename = outDir + "/" + imageIndex + ".png";
             if (new DirectoryInfo(pngFilename).Exists)

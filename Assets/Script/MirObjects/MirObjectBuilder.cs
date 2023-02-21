@@ -62,6 +62,10 @@ public abstract class MirObjectBuilder<T> where T : Packet
         return offsets;
     }
     public static Vector3 calcPosition(Vector2 npcPosition,Vector2 offset){
+        // 动画图片设置成1ppu，也就是每个像素占用一个unity 单位长度
+        // 动画图片的锚点设置为左上角（left top）
+        // 这里需要想一下，图片的坐标原点和对齐方式，为什么x用原本值，y要取反
+        return new Vector3(offset.x,-offset.y,0);
         var x = npcPosition.x * Config.MAP_TILE_WIDTH  + offset.x;
         var y = npcPosition.y * Config.MAP_TILE_HEIGHT + offset.y;
         return new Vector3(-x,-y,0);

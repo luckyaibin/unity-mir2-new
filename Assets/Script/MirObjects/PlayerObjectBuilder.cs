@@ -18,8 +18,8 @@ public class PlayerObjectBuilder : MirObjectBuilder<ObjectPlayer>
         var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab, parent);
         var offset = offsets[objectPlayer.Armour];
 
-        // mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
-        mirGameObject.transform.localPosition = new Vector3(-offset.x, -offset.y, 0);
+        mirGameObject.transform.localPosition = calcPosition(objectPlayer.Location, offset);
+        //mirGameObject.transform.localPosition = new Vector3(offset.x, 0, 0);
         mirGameObject.transform.rotation = Quaternion.identity;
 
         var anim = mirGameObject.GetComponent<Animator>();

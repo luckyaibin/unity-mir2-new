@@ -962,7 +962,7 @@ namespace MLibraryUtils
                 colorsAlign[i] = new Color32(0, 0, 0, 0);
             }
             Image.SetPixels32(colorsAlign);
-            Image.SetPixels32(alw, alh, Width, Height, colors);
+            Image.SetPixels32(alw, 0, Width, Height, colors);
             Image.Apply();
             if (HasMask)
             {

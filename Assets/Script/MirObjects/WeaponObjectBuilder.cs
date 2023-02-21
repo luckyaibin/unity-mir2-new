@@ -17,8 +17,8 @@ public class WeaponObjectBuilder : MirObjectBuilder<ObjectPlayer>
         //TODO 先Instantiate实例化，再设置动画？
         var mirGameObject = UnityEngine.Object.Instantiate(npcPrefab, parent);
         var offset = offsets[objectPlayer.Weapon];
-        // mirGameObject.transform.position = calcPosition(objectPlayer.Location, offset);
-        mirGameObject.transform.localPosition = new Vector3(-offset.x, -offset.y, 0);
+        mirGameObject.transform.localPosition = calcPosition(objectPlayer.Location, offset);
+        //mirGameObject.transform.localPosition = new Vector3(offset.x, 0, 0);
         mirGameObject.name = "weapon";
 
         var anim = mirGameObject.GetComponent<Animator>();
