@@ -8,7 +8,7 @@ using System;
 
 public class MirResourcesProcess : EditorWindow
 {
-    public static string mirRootPathDefault = @"E:/exp/mir2-2022.06.12.00/Build/Client";
+    public static string mirRootPathDefault = @"D:/exp/mir2-2022.06.12.00/Build/Client";
     public string mirRootPath = mirRootPathDefault;
     public string resOutRootPathDefault = "Assets/Resources/mir/";
     public string guiLibName = "";
