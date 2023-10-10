@@ -53,7 +53,7 @@ public class LoginScens : MonoBehaviour, ProcessPacket
             case "BtnStart":
                 Network.Enqueue(new ClientPackets.StartGame { CharacterIndex = characters[0].Index });
                 // DontDestroyOnLoad(gameManager);
-                SceneManager.LoadScene("mainScens");
+                SceneManager.LoadScene("GameScene");
                 Network.loginScens = null;
                 break;
         }
@@ -80,13 +80,14 @@ public class LoginScens : MonoBehaviour, ProcessPacket
                 //  ChangePassword((S.ChangePasswordBanned)p);
                 break;
             case (short)ServerPacketIds.Login:
-                //   Login((S.Login)p);
+                var loginRes = (ServerPackets.Login)p ;
+                Logger.Infof("登录结果%s",loginRes.Result);
                 break;
             case (short)ServerPacketIds.LoginBanned:
                 //  Login((S.LoginBanned)p);
                 break;
             case (short)ServerPacketIds.LoginSuccess:
-                Login((ServerPackets.LoginSuccess)p);
+                OnLoginSuccess((ServerPackets.LoginSuccess)p);
                 break;
             case (short)ServerPacketIds.StartGame:
                 StartGame((ServerPackets.StartGame)p);
@@ -97,7 +98,7 @@ public class LoginScens : MonoBehaviour, ProcessPacket
         }
     }
 
-    private void Login(ServerPackets.LoginSuccess p)
+    private void OnLoginSuccess(ServerPackets.LoginSuccess p)
     {
         var strTmp = "";
         characters = p.Characters;

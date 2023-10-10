@@ -32,3 +32,23 @@ public class SelectInfo
     }
 
 }
+
+public class QuestItemReward
+{
+    public ItemInfo Item;
+    public uint Count = 1;
+
+    public QuestItemReward() { }
+
+    public QuestItemReward(BinaryReader reader)
+    {
+        Item = new ItemInfo(reader);
+        Count = reader.ReadUInt32();
+    }
+
+    public void Save(BinaryWriter writer)
+    {
+        Item.Save(writer);
+        writer.Write(Count);
+    }
+}

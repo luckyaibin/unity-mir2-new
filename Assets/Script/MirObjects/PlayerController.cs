@@ -21,9 +21,9 @@ public class PlayerController : MirBaseController
 
         this.objectPlayerData = (ObjectPlayer)data;
 
-        this.transform.position = new Vector3(0,0,0);
+        this.transform.position = new Vector3(0, 0, 0);
 
-        var playerGameObject = playerObjectBuilder.gameObject(this.objectPlayerData,this.transform);
+        var playerGameObject = playerObjectBuilder.gameObject(this.objectPlayerData, this.transform);
         this.playerAnimator = playerGameObject.GetComponent<Animator>();
 
         var hairGameObject = hairObjectBuilder.gameObject(objectPlayerData, this.transform);
@@ -35,7 +35,7 @@ public class PlayerController : MirBaseController
         // playAnim(this.animator, MirAction.Standing, objectPlayerData.Direction);
         // playAnim(this.hairAnimator, MirAction.Standing, objectPlayerData.Direction);
         // playAnim(this.weaponAnimator, MirAction.Standing, objectPlayerData.Direction);
-        this.playAnimArmourHairWeapon(MirAction.Standing,objectPlayerData.Direction);
+        this.playAnimArmourHairWeapon(MirAction.Standing, objectPlayerData.Direction);
     }
 
     public void playAnim(Animator animator, MirAction mirAction, MirDirection mirDirection)
@@ -82,7 +82,15 @@ public class PlayerController : MirBaseController
         return PlayerObjectBuilder.offsets[this.objectPlayerData.Armour];
         //throw new NotImplementedException();
     }
-
+    public void objectWalk(ObjectWalk objectWalk)
+    {
+        var offset = PlayerObjectBuilder.offsets[this.objectPlayerData.Armour];
+        var targetPosition = PlayerObjectBuilder.calcPosition(objectWalk.Location, offset);
+        this.gameObject.transform.DOMove(targetPosition, 0.6f)
+        .SetUpdate(true)
+        .SetEase(Ease.Linear);
+        playAnimArmourHairWeapon(MirAction.Walking, objectWalk.Direction);
+    }
     public void objectRun(ObjectRun objectRun)
     {
         var offset = PlayerObjectBuilder.offsets[this.objectPlayerData.Armour];
@@ -90,15 +98,7 @@ public class PlayerController : MirBaseController
         this.gameObject.transform.DOMove(targetPosition, 0.6f)
         .SetUpdate(true)
         .SetEase(Ease.Linear);
-        playAnimArmourHairWeapon(MirAction.Running,objectRun.Direction);
+        playAnimArmourHairWeapon(MirAction.Running, objectRun.Direction);
     }
-    public void objectWalk(ObjectRun objectRun)
-    {
-        var offset = PlayerObjectBuilder.offsets[this.objectPlayerData.Armour];
-        var targetPosition = PlayerObjectBuilder.calcPosition(objectRun.Location, offset);
-        this.gameObject.transform.DOMove(targetPosition, 0.6f)
-        .SetUpdate(true)
-        .SetEase(Ease.Linear);
-        playAnimArmourHairWeapon(MirAction.Walking,objectRun.Direction);
-    }
+
 }

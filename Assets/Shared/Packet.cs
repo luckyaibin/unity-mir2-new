@@ -30,6 +30,7 @@ public abstract class Packet
         }
         catch (System.Exception e)
         {
+            Logger.Errorf("receivePacket exception:%s",e.ToString());
             Debug.Log(e);
             return null;
         }
