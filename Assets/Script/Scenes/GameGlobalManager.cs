@@ -31,4 +31,7 @@ public class GameGlobalManager : MonoBehaviour
         // Logger.Debugf("GameGlobalManager  Update...");
         Network.Tick();
     }
+    void OnDestroy(){
+        Network.Disconnect();
+    }
 }

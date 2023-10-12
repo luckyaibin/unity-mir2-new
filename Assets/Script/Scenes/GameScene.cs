@@ -40,10 +40,10 @@ public class GameScene : MonoBehaviour, IProcessPacket
     // Update is called once per frame
     void Update()
     {
-        printCounter++;
-        if (printCounter % 100 == 0){
-            // Logger.Debugf("Game scene %s ", "update...");
-        }
+        // printCounter++;
+        // if (printCounter % 100 == 0){
+        //     // Logger.Debugf("Game scene %s ", "update...");
+        // }
     }
 
     public void process(Packet p)
@@ -52,6 +52,9 @@ public class GameScene : MonoBehaviour, IProcessPacket
         {
             case (short)ServerPacketIds.UserInformation:
                 UserInformation((ServerPackets.UserInformation)p);
+                break;
+            case (short)ServerPacketIds.MapInformation:
+                mapInformation((ServerPackets.MapInformation)p);
                 break;
             case (short)ServerPacketIds.ObjectMonster:
                 objectMonster((ServerPackets.ObjectMonster)p);
@@ -68,11 +71,14 @@ public class GameScene : MonoBehaviour, IProcessPacket
             case (short)ServerPacketIds.ObjectWalk:
                 objectWalk((ObjectWalk)p);
                 break;
-
             case (short)ServerPacketIds.ObjectPlayer:
                 objectPlayer((ObjectPlayer)p);
                 break;
         }
+    }
+
+    private void mapInformation(MapInformation p){
+        this.mapController.setMapInfo(0,0,p.FileName);
     }
 
     private void objectPlayer(ObjectPlayer p)
