@@ -23,14 +23,17 @@ public abstract class Packet
         {
             short id = reader.ReadInt16();
             p = GetServerPacket(id);
-            if (p == null) return null;
-
-            //调用实现
-            p.ReadPacket(reader);
+            if (p != null)
+            {
+                //调用实现
+                p.ReadPacket(reader);
+            }else{
+                Logger.Errorf("ReceivePacket invalid packet id:%d", id);
+            }
         }
         catch (System.Exception e)
         {
-            Logger.Errorf("receivePacket exception:%s",e.ToString());
+            Logger.Errorf("receivePacket exception:%s", e.ToString());
             Debug.Log(e);
             return null;
         }
@@ -39,7 +42,7 @@ public abstract class Packet
         Buffer.BlockCopy(rawBytes, length, extra, 0, rawBytes.Length - length);
         return p;
     }
- public IEnumerable<byte> GetPacketBytes()
+    public IEnumerable<byte> GetPacketBytes()
     {
         if (Index < 0) return new byte[0];
 

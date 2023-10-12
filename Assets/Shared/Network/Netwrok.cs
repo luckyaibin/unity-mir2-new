@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public static class Network
 {
     public static bool Connected;
-    public static ProcessPacket loginScens;
-    public static ProcessPacket gameScens;
+    public static IProcessPacket loginScens;
+    public static IProcessPacket gameScens;
 
     private static TcpClient _client;
     private static string _host;
@@ -146,7 +146,7 @@ public static class Network
         }
     }
 
-    public static void Process()
+    public static void Tick()
     {
         // 连接已经断开,把所有包处理完然后关闭连接
         if (_client == null || !_client.Connected)
@@ -159,7 +159,7 @@ public static class Network
             {
                 if (!_receiveList.TryDequeue(out Packet p) || p == null) continue;
                 if (p is not ServerPackets.Disconnect && p is not ServerPackets.ClientVersion) continue;
-                ProcessPacket(p);
+                DispatchPacket(p);
                 _receiveList = null;
                 return;
             }
@@ -179,7 +179,7 @@ public static class Network
         while (_receiveList != null && !_receiveList.IsEmpty)
         {
             if (!_receiveList.TryDequeue(out Packet p) || p == null) continue;
-            ProcessPacket(p);
+            DispatchPacket(p);
         }
 
         // 2. 发包
@@ -211,19 +211,22 @@ public static class Network
             _sendList.Enqueue(p);
     }
 
-    private static void ProcessPacket(Packet p)
+    private static void DispatchPacket(Packet p)
     {
         Logger.Debugf("网络收到包: %s", p.ToString());
         if (loginScens != null)
             loginScens.process(p);
         if (gameScens != null)
             gameScens.process(p);
+        if (loginScens==null && gameScens==null){
+            Logger.Errorf("none net message processed ...");
+        }
     }
 
 
 
 }
-public interface ProcessPacket
+public interface IProcessPacket
 {
     void process(Packet p);
 }

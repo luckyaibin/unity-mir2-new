@@ -39,7 +39,7 @@ namespace MLibraryUtils
             FloorItems,
 
             //Deco
-            Deco ;
+            Deco;
 
         // 多个的lib数组
         public MLibrary[]
@@ -124,7 +124,7 @@ namespace MLibraryUtils
             //Other 其他
             CreateLibraryList(ref Monsters, Settings.MonsterPath, "000");
             CreateLibraryList(ref Gates, Settings.GatePath, "00");
-            CreateLibraryList(ref Flags,Settings.FlagPath,"00");
+            CreateLibraryList(ref Flags, Settings.FlagPath, "00");
             CreateLibraryList(ref NPCs, Settings.NPCPath, "00");
             CreateLibraryList(ref Mounts, Settings.MountPath, "00");
             CreateLibraryList(ref Fishing, Settings.FishingPath, "00");
@@ -979,15 +979,23 @@ namespace MLibraryUtils
 
         public void CreateTexture(BinaryReader reader)
         {
-            int w = Width;// + (4 - Width % 4) % 4;
-            int h = Height;// + (4 - Height % 4) % 4;
-
+            // int w = Width;// + (4 - Width % 4) % 4;
+            // int h = Height;// + (4 - Height % 4) % 4;
+            int w = Width  + (4 - Width % 4) % 4;
+            int h = Height  + (4 - Height % 4) % 4;
             Image = new Texture2D(w, h);
             byte[] decomp = DecompressImage(reader.ReadBytes(Length));
 
-            Image.SetPixels32(covert(decomp, w, h));
-            //Image.SetPixelData(decomp, 0);
-            Image.Apply();
+            try
+            {
+                Image.SetPixels32(covert(decomp, w, h));
+                //Image.SetPixelData(decomp, 0);
+                Image.Apply();
+            }
+            catch (Exception e)
+            {
+                Logger.Errorf("导出出错了{%s},宽:%d,高:%d ,异常信息:{%s}", this.Length,Width,Height, e.ToString());
+            }
 
             if (HasMask)
             {

@@ -13,7 +13,7 @@ public class NpcObjectBuilder : MirObjectBuilder<ObjectNPC>
     private static readonly string NPC_RES_DIR = "Assets/Resources/mir/Data/NPC";
     static NpcObjectBuilder()
     {
-        var npcOffsetInfoPath = NPC_RES_DIR + "/npc.info";
+        var npcOffsetInfoPath = NPC_RES_DIR + "/CNPC.info";
         UnityEngine.Debug.Log("NpcObjectBuilder npcOffsetInfoPath ------>" + npcOffsetInfoPath);
         //UnityEngine.Debug.Log("NpcObjectBuilder NPC_DIR_PATH ------>" + NPC_DIR_PATH );
         npcOffsets = readOffsets(npcOffsetInfoPath);

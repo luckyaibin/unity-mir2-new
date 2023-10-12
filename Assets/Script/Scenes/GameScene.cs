@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 
 using ServerPackets;
 using UnityEngine;
 
-public class GameScene : MonoBehaviour, ProcessPacket
+public class GameScene : MonoBehaviour, IProcessPacket
 {
+    private int printCounter ;
     private MapController mapController;
 
     private List<GameObject> monsteres = new List<GameObject>();
@@ -28,26 +30,24 @@ public class GameScene : MonoBehaviour, ProcessPacket
     {
         Network.gameScens = this;
     }
-
+    
     // Start is called before the first frame update
     void Start()
     {
-
+        Network.gameScens = this;
         mapController = gameObject.GetComponent<MapController>();
-
-
     }
-
     // Update is called once per frame
     void Update()
     {
-        Logger.Debugf("Game scene ", "update...");
+        printCounter++;
+        if (printCounter % 100 == 0){
+            // Logger.Debugf("Game scene %s ", "update...");
+        }
     }
-
 
     public void process(Packet p)
     {
-
         switch (p.Index)
         {
             case (short)ServerPacketIds.UserInformation:
@@ -74,7 +74,6 @@ public class GameScene : MonoBehaviour, ProcessPacket
                 break;
         }
     }
-
 
     private void objectPlayer(ObjectPlayer p)
     {
@@ -141,7 +140,7 @@ public class GameScene : MonoBehaviour, ProcessPacket
         if (!npcs.ContainsKey(p.ObjectID))
         {
             npcs[p.ObjectID] = npcObjectBuilder.gameObject(p);
-            Logger.Infof("create npc info :%s",p.Name);
+            Logger.Infof("create npc info :%s", p.Name);
         }
     }
 

@@ -7,15 +7,20 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LoginScens : MonoBehaviour, ProcessPacket
+public class LoginScens : MonoBehaviour, IProcessPacket
 {
     private const string TAG = "LoginScens";
+
     public Button login;
     public Button connect;
     public Button startGame;
     public Text characterInfo;
     private List<SelectInfo> characters;
-     void Start()
+    void Awake()
+    {
+
+    }
+    void Start()
     {
         login.onClick.AddListener(delegate
         {
@@ -43,7 +48,8 @@ public class LoginScens : MonoBehaviour, ProcessPacket
         Debug.Log(sender.name);
         switch (sender.name)
         {
-            case "BtnConnect":Network.Connect("127.0.0.1",7000);
+            case "BtnConnect":
+                Network.Connect("127.0.0.1", 7000);
                 Network.loginScens = this;
                 break;
             case "BtnLogin":
@@ -51,10 +57,9 @@ public class LoginScens : MonoBehaviour, ProcessPacket
                 Network.Enqueue(account);
                 break;
             case "BtnStart":
-                Network.Enqueue(new ClientPackets.StartGame { CharacterIndex = characters[0].Index });
-                // DontDestroyOnLoad(gameManager);
                 SceneManager.LoadScene("GameScene");
                 Network.loginScens = null;
+                Network.Enqueue(new ClientPackets.StartGame { CharacterIndex = characters[0].Index });
                 break;
         }
     }
@@ -80,8 +85,8 @@ public class LoginScens : MonoBehaviour, ProcessPacket
                 //  ChangePassword((S.ChangePasswordBanned)p);
                 break;
             case (short)ServerPacketIds.Login:
-                var loginRes = (ServerPackets.Login)p ;
-                Logger.Infof("登录结果%s",loginRes.Result);
+                var loginRes = (ServerPackets.Login)p;
+                Logger.Infof("登录结果%s", loginRes.Result);
                 break;
             case (short)ServerPacketIds.LoginBanned:
                 //  Login((S.LoginBanned)p);
@@ -124,19 +129,19 @@ public class LoginScens : MonoBehaviour, ProcessPacket
         switch (p.Result)
         {
             case 0:
-                Logger.Infof("%s->%s",TAG, "Starting the game is currently disabled.");
+                Logger.Infof("%s->%s", TAG, "Starting the game is currently disabled.");
                 break;
             case 1:
-                Logger.Infof("%s->%s",TAG, "You are not logged in.");
+                Logger.Infof("%s->%s", TAG, "You are not logged in.");
                 break;
             case 2:
-                Logger.Infof("%s->%s",TAG, "Your character could not be found.");
+                Logger.Infof("%s->%s", TAG, "Your character could not be found.");
                 break;
             case 3:
-                Logger.Infof("%s->%s",TAG, "No active map and/or start point found.");
+                Logger.Infof("%s->%s", TAG, "No active map and/or start point found.");
                 break;
             case 4:
-                Logger.Infof("%s->%s",TAG, "start game success");
+                Logger.Infof("%s->%s", TAG, "start game success");
                 break;
         }
 

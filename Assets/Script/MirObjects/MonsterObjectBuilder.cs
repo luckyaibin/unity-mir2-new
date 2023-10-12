@@ -9,7 +9,7 @@ public class MonsterObjectBuilder : MirObjectBuilder<ObjectMonster>
 {
     private static readonly string NPC_RES_DIR = "mir/Data/Monster/";
 //    private static readonly string MONSTER_POFFSET_INFO_PATH = MapConfigs.Data_Dir + "Monster/monster.info";
-    private static readonly string MONSTER_POFFSET_INFO_PATH ="Assets/Resources/mir/Data/Monster/monster.info";
+    private static readonly string MONSTER_POFFSET_INFO_PATH ="Assets/Resources/mir/Data/Monster/CMonster.info";
     public static List<Vector2Int> monsterOffsets = readOffsets(MONSTER_POFFSET_INFO_PATH);
     public override GameObject gameObject(ObjectMonster monster)
     {

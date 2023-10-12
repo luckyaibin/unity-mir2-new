@@ -269,7 +269,7 @@ public class MirResourcesProcess : EditorWindow
                 }
                 catch (Exception e)
                 {
-                    Debug.LogFormat("导出出错了{0}", libName);
+                    Logger.Errorf("导出出错了{%s},{%s}", libName,e.ToString());
                 }
             };
         }
@@ -340,7 +340,7 @@ public class MirResourcesProcess : EditorWindow
     {
         var toStringValue = " s";
         var res = 1.ToString(toStringValue);
-        System.Console.Write(res);
+        Logger.Debugf(res);
     }
     void exportNpcRes()
     {
@@ -348,8 +348,8 @@ public class MirResourcesProcess : EditorWindow
     }
     void exportMapRes()
     {
-        var libs = new Libraries();
-        libs.InitAllLibraries();
+        MapReader mapReader = new MapReader(mirRootPath + "/0.map");
+        var M2CellInfo = mapReader.MapCells;
     }
 
     // 导出一个库，并返回这个库的偏移
