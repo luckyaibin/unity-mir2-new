@@ -281,7 +281,7 @@ namespace ServerPackets
         {
             get { return (short)ServerPacketIds.MapInformation; }
         }
-
+        public Int32 MapIndex = 0;
         public string FileName = string.Empty;
         public string Title = string.Empty;
         public ushort MiniMap, BigMap, Music;
@@ -291,6 +291,7 @@ namespace ServerPackets
 
         protected override void ReadPacket(BinaryReader reader)
         {
+            MapIndex = reader.ReadInt32();
             FileName = reader.ReadString();
             Title = reader.ReadString();
             MiniMap = reader.ReadUInt16();

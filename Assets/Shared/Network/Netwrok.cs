@@ -222,9 +222,6 @@ public static class Network
             Logger.Errorf("none net message processed ...");
         }
     }
-
-
-
 }
 public interface IProcessPacket
 {

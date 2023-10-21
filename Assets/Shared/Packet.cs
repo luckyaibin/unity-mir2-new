@@ -27,7 +27,9 @@ public abstract class Packet
             {
                 //调用实现
                 p.ReadPacket(reader);
-            }else{
+            }
+            else
+            {
                 Logger.Errorf("ReceivePacket invalid packet id:%d", id);
             }
         }
@@ -92,6 +94,8 @@ public abstract class Packet
                 return new S.Login();
             case (short)ServerPacketIds.LoginSuccess:
                 return new S.LoginSuccess();
+            case (short)ServerPacketIds.MapInformation:
+                return new S.MapInformation();
             default:
                 return null;
         }
