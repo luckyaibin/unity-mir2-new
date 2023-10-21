@@ -18,7 +18,8 @@ public class LoginScens : MonoBehaviour, IProcessPacket
     private List<SelectInfo> characters;
     void Awake()
     {
-
+        var go = new GameObject("globalGameManager");
+        go.AddComponent<GameGlobalManager>();
     }
     void Start()
     {

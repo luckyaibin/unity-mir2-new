@@ -41,9 +41,16 @@ public class MapResInfoLoader
         {
             if (!mlibs.ContainsKey(libName))
             {
-                mlibs.Add(libName, new MInfoLibrary(libName + ".info"));
+                var lib = new MInfoLibrary(libName + ".info");
+                lib.LoadMapInfo();
+                mlibs.Add(libName, lib);
             }
-            var info = mlibs[libName].getMImageInfo(imageIndex);
+            MInfoLibrary lib2 = mlibs[libName];
+            var info = lib2.getMImageInfo(imageIndex);
+            if (info == null)
+            {
+                return null;
+            }
             info.imagePath = libName + "/" + imageIndex;
             info.imagePath = info.imagePath.Replace(MapConfigs.MIR_RES_PATH, "");
             return info;

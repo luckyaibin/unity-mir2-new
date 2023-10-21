@@ -13,14 +13,20 @@ class MirCell
     //小地砖
     public GameObject smtiles;
     public GameObject objects;
-    public static GameObject makeMapCell(GameObject mapCell, Type cellType, int mapX, int mapY, MImage imageInfo, MapCellControllerListener mapCellControllerListener)
+    public static GameObject makeMapCell(GameObject parent ,GameObject mapCell, Type cellType, int mapX, int mapY, MImage imageInfo, MapCellControllerListener mapCellControllerListener)
     {
         var point = mapPointToWorldPoint(mapX, mapY, imageInfo, cellType);
-        var tmp = UnityEngine.Object.Instantiate(mapCell, point, Quaternion.identity);
+        var tmp = UnityEngine.Object.Instantiate(mapCell,parent.transform);
+        tmp.transform.localPosition = point;
+        tmp.transform.localRotation = Quaternion.identity;
+
         var com = tmp.GetComponent<MapCell>();
         com.setMapCellControllerListener(mapX, mapY, mapCellControllerListener);
         com.imageInfo = imageInfo;
         tmp.name = cellType.ToString() + "(" + mapX + "," + mapY + ")";
+        if (imageInfo==null){
+            return tmp;
+        }
         if (cellType == Type.tiles)
         {
             //tmp.GetComponent<SpriteRenderer>().sortingLayerName = "map_back";

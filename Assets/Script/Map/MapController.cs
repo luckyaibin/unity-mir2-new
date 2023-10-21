@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class MapController : MonoBehaviour, MapCellControllerListener
 {
     public GameObject mapCell;
+    private MapResInfoLoader mapLoader;
     // Start is called before the first frame update
     private MapReader mapReader;
     private MirCell[,] mapCells;
@@ -38,6 +39,7 @@ public class MapController : MonoBehaviour, MapCellControllerListener
     private void Start()
     {
         palyerCurrent = new Vector2Int(-1, -1);
+        mapLoader = MapResInfoLoader.GetInstance();
     }
 
     private void changeMapInfo()
@@ -55,7 +57,7 @@ public class MapController : MonoBehaviour, MapCellControllerListener
         }
         foreach (var mirCell in mapCells)
         {
-            if (mapCell == null)
+            if (mirCell == null)
             {
                 continue;
             }
@@ -81,10 +83,9 @@ public class MapController : MonoBehaviour, MapCellControllerListener
     {
         if (!mapInitiate())
         {
-            // setMapInfo(343, 335, "0");
             return;
         }
-        gameObject.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, gameObject.transform.position.z);
+        //gameObject.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, gameObject.transform.position.z);
         var tmpX = (int)(originX + gameObject.transform.position.x / MapConfigs.MAP_TILE_WIDTH);
         var tmpY = (int)(originY - gameObject.transform.position.y / MapConfigs.MAP_TILE_HEIGHT);
         if (tmpX == palyerCurrent.x && tmpY == palyerCurrent.y)
@@ -99,6 +100,16 @@ public class MapController : MonoBehaviour, MapCellControllerListener
             //行数
             for (var j = palyerCurrent.y - MapConfigs.ViewRangeY; j < palyerCurrent.y + MapConfigs.ViewRangeY + 15; j++)
             {
+
+                Logger.Debugf("curr i:%d,j:%d", i, j);
+                if (i < 0 || i >= mapCells.GetLength(0))
+                {
+                    continue;
+                }
+                if (j < 0 || j >= mapCells.GetLength(1))
+                {
+                    continue;
+                }
                 if (mapCells[i, j] == null)
                 {
                     mapCells[i, j] = new MirCell();
@@ -108,8 +119,12 @@ public class MapController : MonoBehaviour, MapCellControllerListener
                 {
                     if (mti.hasBackImage(i, j))
                     {
-                        var imageInfo = MapResInfoLoader.GetInstance().GetMImageInfo(MapConfigs.MAP_LIBS[mti.BackIndex], mti.getBackImageIndex());
-                        var objectCell = MirCell.makeMapCell(mapCell, MirCell.Type.tiles, i, j, imageInfo, this);
+                        var imageInfo = mapLoader.GetMImageInfo(MapConfigs.MAP_LIBS[mti.BackIndex], mti.getBackImageIndex());
+                        if (imageInfo == null)
+                        {
+                            continue;
+                        }
+                        var objectCell = MirCell.makeMapCell(this.gameObject,mapCell, MirCell.Type.tiles, i, j, imageInfo, this);
                         mapCells[i, j].tiles = objectCell;
                     }
                 }
@@ -117,8 +132,12 @@ public class MapController : MonoBehaviour, MapCellControllerListener
                 {
                     if (mti.hasMiddleImage())
                     {
-                        var imageInfo = MapResInfoLoader.GetInstance().GetMImageInfo(MapConfigs.MAP_LIBS[mti.MiddleIndex], mti.getMiddleImageIndex());
-                        var objectCell = MirCell.makeMapCell(mapCell, MirCell.Type.smtiles, i, j, imageInfo, this);
+                        var imageInfo = mapLoader.GetMImageInfo(MapConfigs.MAP_LIBS[mti.MiddleIndex], mti.getMiddleImageIndex());
+                        if (imageInfo == null)
+                        {
+                            continue;
+                        }
+                        var objectCell = MirCell.makeMapCell(this.gameObject,mapCell, MirCell.Type.smtiles, i, j, imageInfo, this);
                         mapCells[i, j].smtiles = objectCell;
                     }
                 }
@@ -127,14 +146,20 @@ public class MapController : MonoBehaviour, MapCellControllerListener
                 {
                     if (mti.hasFrontAnimation())
                     {
-                        var imageInfo = MapResInfoLoader.GetInstance().GetMImageInfo(MapConfigs.MAP_LIBS[mti.FrontIndex], mti.getFrontImageIndex());
-                        var objectCell = MirCell.makeMapCell(mapCell, MirCell.Type.objects_layer_ani, i, j, imageInfo, this);
+                        var imageInfo = mapLoader.GetMImageInfo(MapConfigs.MAP_LIBS[mti.FrontIndex], mti.getFrontImageIndex());
+                        if (imageInfo ==null) {
+                            continue;
+                        }
+                        var objectCell = MirCell.makeMapCell(this.gameObject,mapCell, MirCell.Type.objects_layer_ani, i, j, imageInfo, this);
                         mapCells[i, j].objects = objectCell;
                     }
                     else if (mti.hasFrontImage())
                     {
-                        var imageInfo = MapResInfoLoader.GetInstance().GetMImageInfo(MapConfigs.MAP_LIBS[mti.FrontIndex], mti.getFrontImageIndex());
-                        var objectCell = MirCell.makeMapCell(mapCell, MirCell.Type.objects_layer, i, j, imageInfo, this);
+                        var imageInfo = mapLoader.GetMImageInfo(MapConfigs.MAP_LIBS[mti.FrontIndex], mti.getFrontImageIndex());
+                         if (imageInfo ==null) {
+                            continue;
+                        }
+                        var objectCell = MirCell.makeMapCell(this.gameObject,mapCell, MirCell.Type.objects_layer, i, j, imageInfo, this);
                         mapCells[i, j].objects = objectCell;
                     }
                 }

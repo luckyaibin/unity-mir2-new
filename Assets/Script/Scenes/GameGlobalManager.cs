@@ -3,25 +3,17 @@
 
 public class GameGlobalManager : MonoBehaviour
 {
-    private static GameGlobalManager _instance;
-    private static readonly object _syslock = new object();
-    public static GameGlobalManager instance
-    {
-        get
-        {
-            return _instance;
-        }
-    }
+     public static GameGlobalManager _instance;
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         Logger.Debugf("GameGlobalManager Start...");
         // 该实例本身就已经存在了，直接返回 //
         if (_instance == null)
         {
-            GameObject go = new("gameGlobalManager");
+            var go = this.gameObject;
             DontDestroyOnLoad(go);
-            _instance = go.AddComponent<GameGlobalManager>();
+           _instance=this;
         }
     }
 
