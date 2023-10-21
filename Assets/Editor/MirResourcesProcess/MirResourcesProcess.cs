@@ -245,31 +245,56 @@ public class MirResourcesProcess : EditorWindow
         GUILayout.EndHorizontal();
         if (GUILayout.Button("导出地图资源图片"))
         {
+            // TODO 保存每个地图图片资源的宽高 x y到info文件!!!
             EditorApplication.delayCall += () =>
             {
                 var gMapLibIndex = int.Parse(gMapLibName);
-                var maplib = allLibs.MapLibs[gMapLibIndex];
-                if (maplib == null)
+                for (int i = 0; i < allLibs.MapLibs.Length; i++)
                 {
-                    return;
-                }
-                var libPath = maplib.getLibPath();
-                var libName = Path.GetFileNameWithoutExtension(libPath);
-                var path = libPath.Replace(MLibrary.Extention, "");
-                var dst = Settings.resRootPath;
-                var finalPath = path.Replace(dst, resOutRootPathDefault);
-                var dirInfo = new DirectoryInfo(finalPath);
-                if (!dirInfo.Exists)
-                {
-                    dirInfo.Create();
-                }
-                try
-                {
-                    exportOneLibImages(maplib, finalPath, false, 1000);
-                }
-                catch (Exception e)
-                {
-                    Logger.Errorf("导出出错了{%s},{%s}", libName,e.ToString());
+                    if (gMapLibIndex != -1 && i != gMapLibIndex)
+                    {
+                        continue;
+                    }
+                    var maplib = allLibs.MapLibs[i];
+                    var libPath = maplib.getLibPath();
+                    var libName = Path.GetFileNameWithoutExtension(libPath);
+                    var path = libPath.Replace(MLibrary.Extention, "");
+                    var dst = Settings.resRootPath;
+                    var finalPath = path.Replace(dst, resOutRootPathDefault);
+                    var dirInfo = new DirectoryInfo(finalPath);
+                    if (!dirInfo.Exists)
+                    {
+                        dirInfo.Create();
+                    }
+                    try
+                    {
+                        // 地图图片的info保存的数据要多一些,有x,y,宽,高
+                        exportOneLibImages(maplib, finalPath, false, -1);
+
+                        List<Tuple<Int16, Int16, Int16, Int16>> mapImageInfo = new List<Tuple<Int16, Int16, Int16, Int16>>(0);
+                        // 找出所有图片的偏移
+                        for (int j = 0; j < maplib.getCount(); j++)
+                        {
+                            var image = maplib.getMImageInfo(j);
+                            if (image == null || image.Width == 0 || image.Height == 0)
+                            {
+                                continue;
+                            }
+                            var t = new Tuple<Int16, Int16, Int16, Int16>
+                            (
+                                image.X,
+                                image.Y,
+                                image.Width,
+                                image.Height
+                            );
+                            mapImageInfo.Add(t);
+                        }
+                        saveMapOffsets(mapImageInfo, finalPath + ".info");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Errorf("导出出错了{%s},{%s}", libName, e.ToString());
+                    }
                 }
             };
         }
@@ -475,6 +500,28 @@ public class MirResourcesProcess : EditorWindow
         {
             writer.Write(offset.x);
             writer.Write(offset.y);
+        }
+        writer.Flush();
+        writer.Close();
+        file.Close();
+    }
+
+    void saveMapOffsets(List<Tuple<Int16, Int16, Int16, Int16>> mapInfo, string savePath)
+    {
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
+        var file = File.Open(savePath, FileMode.CreateNew);
+        BinaryWriter writer = new BinaryWriter(file);
+        Int32 c = mapInfo.Count ;
+        writer.Write(c);
+        foreach (var info in mapInfo)
+        {
+            writer.Write(info.Item1);
+            writer.Write(info.Item2);
+            writer.Write(info.Item3);
+            writer.Write(info.Item4);
         }
         writer.Flush();
         writer.Close();
