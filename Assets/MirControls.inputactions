@@ -1,0 +1,34 @@
+{
+    "name": "MirControls",
+    "maps": [
+        {
+            "name": "MirPlayer",
+            "id": "0e30a9fa-bd73-4034-bb49-cf792525b912",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "1b902cea-566e-45bf-a0e7-c50898054df6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3dae5e94-ddb3-440e-bfaf-28db7c70564c",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

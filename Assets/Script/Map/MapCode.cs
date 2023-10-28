@@ -111,14 +111,9 @@ public class MapReader
     public MapReader(string FileName)
     {
         this.FileName = FileName;
-
-        initiate();
     }
 
-
-
-
-    private void initiate()
+    public void Initiate()
     {
         if (File.Exists(FileName))
         {

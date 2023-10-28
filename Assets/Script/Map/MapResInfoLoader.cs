@@ -35,8 +35,12 @@ public class MapResInfoLoader
     }
 
     private Dictionary<String, MInfoLibrary> mlibs = new Dictionary<String, MInfoLibrary>();
-    public MImage GetMImageInfo(string libName, int imageIndex)
+    public MImage GetMImageInfo(int libraryIndex, int imageIndex)
     {
+        if (imageIndex == 1851){
+            Logger.Debugf("++++++ get Image %d:%d",libraryIndex,imageIndex);
+        }
+        var libName = MapConfigs.MAP_LIBS[libraryIndex];
         lock (_syslock)
         {
             if (!mlibs.ContainsKey(libName))

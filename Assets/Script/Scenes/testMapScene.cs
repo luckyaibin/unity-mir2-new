@@ -12,7 +12,7 @@ public class testMapScene : MonoBehaviour
     void Start()
     {
         mapController = GetComponent<MapController>();
-        mapController.setMapInfo(10,10,"2");
+        mapController.setMapInfo(110,110,"0");
     }
 
     // Update is called once per frame

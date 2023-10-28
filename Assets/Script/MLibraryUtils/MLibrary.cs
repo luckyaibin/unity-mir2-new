@@ -809,7 +809,8 @@ namespace MLibraryUtils
             fileStream.Close();
         }
     }
-
+    // 可以在编辑器里看到这个属性
+    [System.Serializable]
     public sealed class MImage
     {
         public short Width, Height, X, Y, ShadowX, ShadowY;

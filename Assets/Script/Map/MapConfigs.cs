@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MLibraryUtils;
+using UnityEngine;
 
 
 public class MapConfigs
